@@ -1,0 +1,193 @@
+/*  CompiladorExemplo.jj  -  Analisador Sintático com tabela de simbolos*/
+
+options {
+
+  JDK_VERSION = "1.5";
+
+  DEBUG_PARSER = false;
+
+  DEBUG_TOKEN_MANAGER = false;
+
+}
+
+PARSER_BEGIN(CompiladorExemplo)
+
+package Principal;
+
+import java.io.*;
+
+public class CompiladorExemplo {
+
+   static Tabela tabela = new Tabela();
+
+   public static void main(String args[])  throws ParseException  {
+
+      CompiladorExemplo analisador = null;
+
+      try {
+
+         analisador = new CompiladorExemplo(new FileInputStream("prog_fonte.my"));
+
+         analisador.inicio();
+
+         System.out.println(tabela.toString());
+
+      }
+
+      catch(FileNotFoundException e) {
+
+         System.out.println("Erro: arquivo não encontrado");
+
+      }
+
+      catch(TokenMgrError e) {
+
+         System.out.println("Erro léxico\n" + e.getMessage());
+
+      }
+
+      catch(ParseException e) {
+
+         System.out.println("Erro sintático\n" + e.getMessage());
+
+      }
+
+   }
+
+}
+
+PARSER_END(CompiladorExemplo)
+
+SKIP : { " " | "\t" | "\r" | "\n" }
+
+TOKEN [IGNORE_CASE] : {
+
+      <EXIBE: "exibe" >
+
+}
+
+TOKEN : {
+
+      < IDENT:   (["a"-"z"])+ > |
+
+      < ATRIB:   ":=" >         |
+
+      < ADICAO:  "+" >          |
+
+      < PT_VIRG: ";" >          |
+
+      < UM:      "I" >          |
+
+      < DOIS:    "II" >         |
+
+      < TRES:    "III" >        |
+
+      < QUATRO:  "IV" >         |
+
+      < CINCO:   "V" >          |
+
+      < SEIS:    "VI" >         |
+
+      < SETE:    "VII" >        |
+
+      < OITO:    "VIII" >       |
+
+      < NOVE:    "IX" >         |
+
+      < DEZ:     "X" >          |
+
+      < VINTE:   "XX" >         |
+
+      < TRINTA:  "XXX" >      
+
+}
+
+void inicio() : {}
+
+{
+
+   ( linhaComando() )* <EOF>
+
+}
+
+void linhaComando() : {} 
+
+{
+
+      comando() <PT_VIRG>
+
+}
+
+void comando() : {} 
+
+{
+
+      exibe() | atribui()
+
+}
+
+void exibe() : {}
+
+{
+
+      <EXIBE> <IDENT>
+
+}
+
+void atribui() : {Simbolo simb; Token t;} 
+
+{
+
+      t=<IDENT>
+
+      {
+
+            simb = new Simbolo(t.image);
+
+            tabela.inclui(simb);
+
+      }
+
+      <ATRIB> expressao()
+
+}
+
+void expressao() : {} 
+
+{
+
+      fator() ( <ADICAO> fator() )*
+
+}
+
+void fator() : {} 
+
+{
+
+      <IDENT> | numero()
+
+}
+
+void numero() : {} 
+
+{
+
+      dezena() ( unidade() )? | unidade()
+
+}
+
+void unidade() : {} 
+
+{
+
+      <UM> | <DOIS> | <TRES> | <QUATRO> | <CINCO> | <SEIS> | <SETE> | <OITO> | <NOVE>
+
+}
+
+void dezena() : {} 
+
+{
+
+      <DEZ> | <VINTE> | <TRINTA>
+
+}
