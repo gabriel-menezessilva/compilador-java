@@ -6,68 +6,64 @@ inicio
 
  
 
-   variavel numerica Nota1, Nota2, Nota3,
+   number Nota1, Nota2, Nota3, MediaSemestral, MediaFinal, PrFinal, Faltas;
 
-                     MediaSemestral, MediaFinal, PrFinal, Faltas
-
-   variavel string   Situacao
+   string Situacao;
 
  
 
-   imprima "entre com as duas notas:"
+   print("entre com as duas notas:");
 
-   leia Nota1,Nota2, Nota3
+   Nota1 = input("");
+   Nota2 = input("");
+   Nota3 = input("");
 
-   leia "Entre com o percentual de faltas:", Faltas
+   Faltas = input("Entre com o percentual de faltas:"); 
 
  
 
-   MediaSemestral <- (Nota1+Nota2+Nota3)/3
+   MediaSemestral = (Nota1+Nota2+Nota3)/3;
 
-   MediaFinal <- MediaSemestral
+   MediaFinal = MediaSemestral;
 
     
 
-   se Faltas > 50 or (Faltas > 25 and MediaSemestral < 1.5) entao
+  if (Faltas > 50 || (Faltas > 25 && MediaSemestral < 1.5) ) {
 
-      situacao <- "reprovado por faltas"
+      situacao = "reprovado por faltas";
 
-   else
+   } else {
 
-      se MediaSemestral < 1.5 entao
+     if (MediaSemestral < 1.5 ) {
 
-         situacao <- "reprovado por nota"
+         situacao = "reprovado por nota";
 
-      else
+      } else {
 
-         se MediaSemestral < 7 entao
+        if (MediaSemestral < 7 ) {
 
-            imprima "Nota mínima para a prova final:",
+            print("Nota mínima para a prova final:" + (5 - MediaSemestral * 0.4)/0.6);
 
-                    (5 - MediaSemestral * 0.4)/0.6
+            PrFinal = input("Entre com a nota da prova final:"); 
 
-            leia "Entre com a nota da prova final:", PrFinal
+            MediaFinal = MediaSemestral * 0.4 + PrFinal * 0.6 ;
 
-            MediaFinal <- MediaSemestral * 0.4 + PrFinal * 0.6 
+         } endif;
 
-         fim-se
+        if (MediaFinal >= 5 ) {
 
-         se MediaFinal >= 5 entao
+            Situacao = "aprovado";
 
-            Situacao <- "aprovado"
+         } else {
 
-         else
+            Situacao = "reprovado por nota";
 
-            Situacao <- "reprovado por nota"
+         } endif;
 
-         fim-se
+      } endif;
 
-      fim-se
+   } endif;
 
-   fim-se
-
-   imprima "Média final é:", MediaFinal, "Situacao:",Situacao,
-
-           "Faltas(%):", PercentualFaltas
+   print("Média final é:" + MediaFinal + "; Situacao:" + Situacao + "; Faltas(%):" + PercentualFaltas);
 
 fim
