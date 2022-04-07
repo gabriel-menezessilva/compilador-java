@@ -1,0 +1,3 @@
+inicio
+print ("Welcome to the jungle!");
+fim

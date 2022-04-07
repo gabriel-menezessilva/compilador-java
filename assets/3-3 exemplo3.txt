@@ -1,0 +1,39 @@
+inicio
+
+   /*testes com expressões, operadores e precedência*/
+
+   				number Value,ei,bi,ci,di,i,ef,gi;
+
+            	number ecs,uai,zi;
+
+            	string es1, es2, es3;
+
+   Value = 78 + 58 - (34 - 52) - 23 * 94;
+
+   ei = ecs + 4 * 5 ^ 2;
+
+   bi = 6 + 7 * 23 ^ ecs;
+
+   ci = 14 ^ 62 * 43 + ecs;
+
+   di = ecs ^ 52 * 36 + 24;
+
+   i = -30--25;
+
+   ef = ecs--28;
+
+   gi = 15 + ecs * 27 > 36 - uai || 54 == zi and 55 + 14 < ( 67 + zi ) *
+
+        ( 57 - ( 48 - 39 )) && !!! (ecs > uai) + zi;
+
+   es1 = "oi";
+
+   es2 = "mundo";
+
+   es3 = es1 + " " + es2 + "!";
+
+   print (Value + " " + ei + " " + bi + " " + ci + " " + di + " " + i + " " + ef + " " + gi + " " + es1 + " " + es2 + " " + es3 + " ");
+	
+	/* Deve imprimir Value ei bi ci di i ef gi ecs uai zi es1 es2 es3 */
+
+fim

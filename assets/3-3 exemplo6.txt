@@ -1,0 +1,73 @@
+inicio
+
+   /* Programa exemplo
+
+   Calcula média final segundo critérios da FAESA */
+
+ 
+
+   variavel numerica Nota1, Nota2, Nota3,
+
+                     MediaSemestral, MediaFinal, PrFinal, Faltas
+
+   variavel string   Situacao
+
+ 
+
+   imprima "entre com as duas notas:"
+
+   leia Nota1,Nota2, Nota3
+
+   leia "Entre com o percentual de faltas:", Faltas
+
+ 
+
+   MediaSemestral <- (Nota1+Nota2+Nota3)/3
+
+   MediaFinal <- MediaSemestral
+
+    
+
+   se Faltas > 50 or (Faltas > 25 and MediaSemestral < 1.5) entao
+
+      situacao <- "reprovado por faltas"
+
+   else
+
+      se MediaSemestral < 1.5 entao
+
+         situacao <- "reprovado por nota"
+
+      else
+
+         se MediaSemestral < 7 entao
+
+            imprima "Nota mínima para a prova final:",
+
+                    (5 - MediaSemestral * 0.4)/0.6
+
+            leia "Entre com a nota da prova final:", PrFinal
+
+            MediaFinal <- MediaSemestral * 0.4 + PrFinal * 0.6 
+
+         fim-se
+
+         se MediaFinal >= 5 entao
+
+            Situacao <- "aprovado"
+
+         else
+
+            Situacao <- "reprovado por nota"
+
+         fim-se
+
+      fim-se
+
+   fim-se
+
+   imprima "Média final é:", MediaFinal, "Situacao:",Situacao,
+
+           "Faltas(%):", PercentualFaltas
+
+fim

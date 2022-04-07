@@ -1,0 +1,73 @@
+inicio
+
+   /* Programa para comparar duas datas */
+
+   variavel numerica dia1, mes1, ano1, dia2, mes2, ano2
+
+            string   relacao
+
+   leia "Entre com o dia da primeira data:", dia1
+
+   leia "Entre com o mes da primeira data:", mes1
+
+   leia "Entre com o ano da primeira data:", ano1
+
+   leia "Entre com o dia da segunda data:",  dia2
+
+   leia "Entre com o mes da segunda data:",  mes2
+
+   leia "Entre com o ano da segunda data:",  ano2
+
+   se ano1 > ano2 então
+
+      relacao <- "maior"
+
+   else
+
+      se ano1 < ano2 então
+
+         relacao <- "menor"
+
+      else
+
+         se mes1 > mes2 então
+
+            relacao <- "maior"
+
+         else
+
+            se mes1 < mes2 então
+
+               relacao <- "menor"
+
+            else
+
+               se dia1 > dia2 então
+
+                  relacao <- "maior"
+
+               else
+
+                  se dia1 < dia2 então
+
+                     relacao <- "menor"
+
+                  else
+
+                     relacao <- "igual"
+
+                  fim-se
+
+               fim-se
+
+            fim-se
+
+         fim-se
+
+      fim-se
+
+   fim-se
+
+   imprima "Relação entre a primeira e segunda datas: "+relacao
+
+fim

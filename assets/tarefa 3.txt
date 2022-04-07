@@ -1,0 +1,64 @@
+3.1 e 3.2
+
+1 - Comentários de término de linha e de várias linhas
+R:  //    /**/
+
+
+2 - Caractere de finalização de comando.
+R: ;
+
+
+3 - Tipos de variáveis: pelo menos um para armazenar strings e outro para números (não definir o tipo booleano - será explicado no item vii).
+R: string e number 
+
+
+4 - Comando de entrada de dados via teclado para variáveis, com possibilidade de exibir uma mensagem.
+R: input e print
+
+
+5 - Comando de atribuição de valores e/ou expressões para variáveis.
+R: =
+
+
+6 - Comando de exibição de dados,  com possibilidade de definir o título de janela de impressão. 
+R: printbox, primeiro parametro vai ser o texto, o segundo titulo, para o segundo vai ser o valor default "title"
+
+
+7 - Expressões no formato infixo, com parênteses balanceados, e diversos operadores: potenciação, multiplicativos (multiplicação e divisão), aditivos (adição e subtração), relacionais (maior, menor, maior ou igual, menor ou igual, diferente, igual), lógico (negação = NOT, conjunção = AND, disjunção = OR), concatenação de strings. Todos os operadores aritméticos, relacionais e lógicos podem ser misturados, pois será considerado, como na linguagem C, o valor 0 para falso e 1 (e qualquer valor diferente de zero) para verdadeiro.
+R:
+Potenciação: ^
+Multiplicativo: *, /
+Aditivos: +, -
+Relacionais: >, <, >=, <=, !=, =
+Logico: !, &&, || 
+Concatenação de strings: "" + ""
+
+
+8 - Comando condicional com estrutura do tipo senão. Para evitar problemas de ambigüidade na gramática onde o "else" pode pertencer a um if mais interno ou a outro if mais externo, faça a previsão de uma palavra reservada para terminar a estrutura, como por exemplo: "fim-se".
+R: if, else e endif
+
+
+9 - Comando de repetição do tipo 'enquanto'.
+R: While
+
+
+10 - Linguagem case sensitive: True
+
+
+11 -  regra de formação dos nomes de variáveis
+R: [a-z][A-Z]+ [- _]*
+
+
+12 - escrita uma string no programa (os caracteres delimitadores):
+R: ""
+
+
+13 - sintaxe e o local da declaração das variáveis.
+R: <tipo> <nomeVariavel> [a-z][A-Z]+ [- _]*
+
+like C(qualquer lugar)
+
+
+
+
+

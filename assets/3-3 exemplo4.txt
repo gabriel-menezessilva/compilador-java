@@ -1,0 +1,23 @@
+inicio
+
+   // calcula media de muitos valores
+
+   variavel numerica soma, valor, qtde
+
+   leia "quantos valores:", qtde
+
+   soma <- 0
+
+   cont <- 1
+
+   enquanto cont <= qtde
+
+      leia valor
+
+      soma <- soma + valor
+
+   fim-enquanto
+
+   imprima "Media:", soma/qtde
+
+fim
