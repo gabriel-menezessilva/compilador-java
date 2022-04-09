@@ -39,7 +39,7 @@ R: if, else e endif
 
 
 9 - Comando de repetição do tipo 'enquanto'.
-R: While
+R: while
 
 
 10 - Linguagem case sensitive: True
