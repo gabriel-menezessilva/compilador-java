@@ -2,22 +2,21 @@ inicio
 
    // calcula media de muitos valores
 
-   variavel numerica soma, valor, qtde
+   number soma, valor, qtde;
 
-   leia "quantos valores:", qtde
+   qtde = input("quantos valores:");
 
-   soma <- 0
+   soma = 0;
 
-   cont <- 1
+   cont = 1;
 
-   enquanto cont <= qtde
+   While (cont <= qtde) {
 
-      leia valor
+      valor = input("");
 
-      soma <- soma + valor
+      soma = soma + valor;
+   }
 
-   fim-enquanto
-
-   imprima "Media:", soma/qtde
+   print("Media:" + soma/qtde);
 
 fim

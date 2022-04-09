@@ -2,72 +2,72 @@ inicio
 
    /* Programa para comparar duas datas */
 
-   variavel numerica dia1, mes1, ano1, dia2, mes2, ano2
+   number dia1, mes1, ano1, dia2, mes2, ano2;
 
-            string   relacao
+   string relacao;
 
-   leia "Entre com o dia da primeira data:", dia1
+   dia1 = input("Entre com o dia da primeira data:");
 
-   leia "Entre com o mes da primeira data:", mes1
+   mes1 = input("Entre com o mes da primeira data:"); 
 
-   leia "Entre com o ano da primeira data:", ano1
+   ano1 = input("Entre com o ano da primeira data:"); 
 
-   leia "Entre com o dia da segunda data:",  dia2
+   dia2 = input("Entre com o dia da segunda data:");  
 
-   leia "Entre com o mes da segunda data:",  mes2
+   mes2 = input("Entre com o mes da segunda data:");
 
-   leia "Entre com o ano da segunda data:",  ano2
+   ano2 = input("Entre com o ano da segunda data:");
 
-   se ano1 > ano2 então
+   if (ano1 > ano2) {
 
-      relacao <- "maior"
+      relacao = "maior";
 
-   else
+   } else { 
 
-      se ano1 < ano2 então
+      if(ano1 < ano2) {
 
-         relacao <- "menor"
+         relacao = "menor";
 
-      else
+      } else {
 
-         se mes1 > mes2 então
+         if(mes1 > mes2) {
 
-            relacao <- "maior"
+            relacao = "maior";
 
-         else
+         } else {
 
-            se mes1 < mes2 então
+            if(mes1 < mes2) {
 
-               relacao <- "menor"
+               relacao = "menor";
 
-            else
+            } else {
 
-               se dia1 > dia2 então
+               if(dia1 > dia2) {
 
-                  relacao <- "maior"
+                  relacao = "maior";
 
-               else
+               } else {
 
-                  se dia1 < dia2 então
+                  if(dia1 < dia2) {
 
-                     relacao <- "menor"
+                     relacao = "menor";
 
-                  else
+                  } else { 
 
-                     relacao <- "igual"
+                     relacao = "igual";
 
-                  fim-se
+                  }endif;
 
-               fim-se
+               }endif;
 
-            fim-se
+            }endif;
 
-         fim-se
+         }endif;
 
-      fim-se
+      }endif;
 
-   fim-se
+   }endif;
 
-   imprima "Relação entre a primeira e segunda datas: "+relacao
+   pint("Relação entre a primeira e segunda datas: " + relacao);
 
 fim
