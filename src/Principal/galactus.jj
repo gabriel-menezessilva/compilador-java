@@ -16,21 +16,29 @@ package Principal;
 
 import java.io.*;
 
+import java.util.LinkedList;
+
 public class CompiladorExemplo {
 
    static Tabela tabela = new Tabela();
 
+   static LinkedList<Comando> listaComandos;
+
    public static void main(String args[])  throws ParseException  {
 
-      CompiladorExemplo analisador = null;
+        CompiladorExemplo analisador = null;
 
       try {
 
          analisador = new CompiladorExemplo(new FileInputStream("prog_fonte.my"));
 
-         analisador.inicio();
+         listaComandos = analisador.inicio();
 
-         System.out.println(tabela.toString());
+         // System.out.println(tabela.toString());
+
+         // System.out.println(listaComandos);
+
+         GeradorCodigoDestino.geraCodigoAssembler(listaComandos);
 
       }
 
@@ -58,7 +66,11 @@ public class CompiladorExemplo {
 
 PARSER_END(CompiladorExemplo)
 
+ 
+
 SKIP : { " " | "\t" | "\r" | "\n" }
+
+ 
 
 TOKEN [IGNORE_CASE] : {
 
@@ -102,39 +114,81 @@ TOKEN : {
 
 }
 
-void inicio() : {}
+LinkedList<Comando> inicio() : {Comando com = null; LinkedList<Comando> listaComandos = new LinkedList();}
 
 {
 
-   ( linhaComando() )* <EOF>
+   ( com = linhaComando()
+
+      {
+
+           listaComandos.add(com);
+
+      }
+
+   )* <EOF>
+
+   {
+
+      return listaComandos;
+
+   }
 
 }
 
-void linhaComando() : {} 
+Comando linhaComando() : {Comando com;} 
 
 {
 
-      comando() <PT_VIRG>
+      com = comando() <PT_VIRG>
+
+      {
+
+            return com;
+
+      }
 
 }
 
-void comando() : {} 
+Comando comando() : {Comando com;} 
 
 {
 
-      exibe() | atribui()
+      (
+
+          com = exibe()
+
+       |
+
+          com = atribui()
+
+      )
+
+      {
+
+            return com;
+
+      }
 
 }
 
-void exibe() : {}
+Comando exibe() : {Comando com; Token t;}
 
 {
 
-      <EXIBE> <IDENT>
+      <EXIBE> t = <IDENT>
+
+      {
+
+            com = new Comando('E',t.image,"");
+
+            return com;
+
+      }
 
 }
 
-void atribui() : {Simbolo simb; Token t;} 
+Comando atribui() : {Simbolo simb; Token t; LinkedList<Item> listaExp; Comando com;} 
 
 {
 
@@ -148,46 +202,140 @@ void atribui() : {Simbolo simb; Token t;}
 
       }
 
-      <ATRIB> expressao()
+      <ATRIB> listaExp = expressao()
+
+      {
+
+            //System.out.println(listaExp);
+
+            com = new Comando('A',t.image,listaExp);
+
+            return com;
+
+      }
 
 }
 
-void expressao() : {} 
+LinkedList<Item> expressao() : {LinkedList<Item> listaExp = new LinkedList<Item>(); Item item = null;} 
 
 {
 
-      fator() ( <ADICAO> fator() )*
+      item = fator()
+
+      {
+
+            listaExp.add(item);
+
+      }
+
+      ( 
+
+         <ADICAO> item = fator()
+
+         {
+
+              listaExp.add(item);
+
+              listaExp.add(new Item('o',"+"));
+
+         }
+
+     
+
+      )*
+
+      {
+
+            return listaExp;
+
+      }
 
 }
 
-void fator() : {} 
+Item fator() : {Token t;Item item = null; int valorNumero;} 
 
 {
 
-      <IDENT> | numero()
+      t = <IDENT>
+
+      {
+
+         if(!tabela.isExiste(t.image))
+
+          System.out.println("Erro semântico \n A variável "+t.image+
+
+                             " não foi inicializada");
+
+         item = new Item('v',t.image);
+
+         return item;
+
+      }
+
+  |
+
+      valorNumero = numero()
+
+      {
+
+         item = new Item('n',""+valorNumero);
+
+         return item;
+
+      }
 
 }
 
-void numero() : {} 
+int numero() : {int valorUnidade = 0, valorDezena = 0;} 
 
 {
 
-      dezena() ( unidade() )? | unidade()
+      (
+
+         valorDezena = dezena() ( valorUnidade = unidade() )? | valorUnidade = unidade()
+
+      )
+
+      {
+
+            return valorDezena + valorUnidade;
+
+      }
 
 }
 
-void unidade() : {} 
+int unidade() : {} 
 
 {
 
-      <UM> | <DOIS> | <TRES> | <QUATRO> | <CINCO> | <SEIS> | <SETE> | <OITO> | <NOVE>
+      <UM>     { return 1; } |
+
+      <DOIS>   { return 2; } |
+
+      <TRES>   { return 3; } |
+
+      <QUATRO> { return 4; } |
+
+      <CINCO>  { return 5; } |
+
+      <SEIS>   { return 6; } |
+
+      <SETE>   { return 7; } |
+
+      <OITO>   { return 8; } |
+
+      <NOVE>   { return 9; }
 
 }
 
-void dezena() : {} 
+int dezena() : {} 
 
 {
 
-      <DEZ> | <VINTE> | <TRINTA>
+      <DEZ>    { return 10; } |
+
+      <VINTE>  { return 20; } |
+
+      <TRINTA> { return 30; }
 
 }

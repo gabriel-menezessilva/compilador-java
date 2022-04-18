@@ -3,21 +3,29 @@ package Principal;
 
 import java.io.*;
 
+import java.util.LinkedList;
+
 public class CompiladorExemplo implements CompiladorExemploConstants {
 
    static Tabela tabela = new Tabela();
 
+   static LinkedList<Comando> listaComandos;
+
    public static void main(String args[])  throws ParseException  {
 
-      CompiladorExemplo analisador = null;
+        CompiladorExemplo analisador = null;
 
       try {
 
          analisador = new CompiladorExemplo(new FileInputStream("prog_fonte.my"));
 
-         analisador.inicio();
+         listaComandos = analisador.inicio();
 
-         System.out.println(tabela.toString());
+         // System.out.println(tabela.toString());
+
+         // System.out.println(listaComandos);
+
+         GeradorCodigoDestino.geraCodigoAssembler(listaComandos);
 
       }
 
@@ -41,7 +49,8 @@ public class CompiladorExemplo implements CompiladorExemploConstants {
 
    }
 
-  static final public void inicio() throws ParseException {
+  static final public LinkedList<Comando> inicio() throws ParseException {
+                                Comando com = null; LinkedList<Comando> listaComandos = new LinkedList();
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -53,48 +62,70 @@ public class CompiladorExemplo implements CompiladorExemploConstants {
         jj_la1[0] = jj_gen;
         break label_1;
       }
-      linhaComando();
+      com = linhaComando();
+           listaComandos.add(com);
     }
     jj_consume_token(0);
+      {if (true) return listaComandos;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void linhaComando() throws ParseException {
-    comando();
+  static final public Comando linhaComando() throws ParseException {
+                          Comando com;
+    com = comando();
     jj_consume_token(PT_VIRG);
+            {if (true) return com;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void comando() throws ParseException {
+  static final public Comando comando() throws ParseException {
+                     Comando com;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EXIBE:
-      exibe();
+      com = exibe();
       break;
     case IDENT:
-      atribui();
+      com = atribui();
       break;
     default:
       jj_la1[1] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+            {if (true) return com;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void exibe() throws ParseException {
+  static final public Comando exibe() throws ParseException {
+                   Comando com; Token t;
     jj_consume_token(EXIBE);
-    jj_consume_token(IDENT);
+    t = jj_consume_token(IDENT);
+            com = new Comando('E',t.image,"");
+
+            {if (true) return com;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void atribui() throws ParseException {
-                  Simbolo simb; Token t;
+  static final public Comando atribui() throws ParseException {
+                     Simbolo simb; Token t; LinkedList<Item> listaExp; Comando com;
     t = jj_consume_token(IDENT);
             simb = new Simbolo(t.image);
 
             tabela.inclui(simb);
     jj_consume_token(ATRIB);
-    expressao();
+    listaExp = expressao();
+            //System.out.println(listaExp);
+
+            com = new Comando('A',t.image,listaExp);
+
+            {if (true) return com;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void expressao() throws ParseException {
-    fator();
+  static final public LinkedList<Item> expressao() throws ParseException {
+                                LinkedList<Item> listaExp = new LinkedList<Item>(); Item item = null;
+    item = fator();
+            listaExp.add(item);
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -106,14 +137,29 @@ public class CompiladorExemplo implements CompiladorExemploConstants {
         break label_2;
       }
       jj_consume_token(ADICAO);
-      fator();
+      item = fator();
+              listaExp.add(item);
+
+              listaExp.add(new Item('o',"+"));
     }
+            {if (true) return listaExp;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void fator() throws ParseException {
+  static final public Item fator() throws ParseException {
+                Token t;Item item = null; int valorNumero;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IDENT:
-      jj_consume_token(IDENT);
+      t = jj_consume_token(IDENT);
+         if(!tabela.isExiste(t.image))
+
+          System.out.println("Erro sem\u00e2ntico \u005cn A vari\u00e1vel "+t.image+
+
+                             " n\u00e3o foi inicializada");
+
+         item = new Item('v',t.image);
+
+         {if (true) return item;}
       break;
     case UM:
     case DOIS:
@@ -127,21 +173,26 @@ public class CompiladorExemplo implements CompiladorExemploConstants {
     case DEZ:
     case VINTE:
     case TRINTA:
-      numero();
+      valorNumero = numero();
+         item = new Item('n',""+valorNumero);
+
+         {if (true) return item;}
       break;
     default:
       jj_la1[3] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void numero() throws ParseException {
+  static final public int numero() throws ParseException {
+                int valorUnidade = 0, valorDezena = 0;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DEZ:
     case VINTE:
     case TRINTA:
-      dezena();
+      valorDezena = dezena();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case UM:
       case DOIS:
@@ -152,7 +203,7 @@ public class CompiladorExemplo implements CompiladorExemploConstants {
       case SETE:
       case OITO:
       case NOVE:
-        unidade();
+        valorUnidade = unidade();
         break;
       default:
         jj_la1[4] = jj_gen;
@@ -168,67 +219,83 @@ public class CompiladorExemplo implements CompiladorExemploConstants {
     case SETE:
     case OITO:
     case NOVE:
-      unidade();
+      valorUnidade = unidade();
       break;
     default:
       jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+            {if (true) return valorDezena + valorUnidade;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void unidade() throws ParseException {
+  static final public int unidade() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case UM:
       jj_consume_token(UM);
+                 {if (true) return 1;}
       break;
     case DOIS:
       jj_consume_token(DOIS);
+                 {if (true) return 2;}
       break;
     case TRES:
       jj_consume_token(TRES);
+                 {if (true) return 3;}
       break;
     case QUATRO:
       jj_consume_token(QUATRO);
+                 {if (true) return 4;}
       break;
     case CINCO:
       jj_consume_token(CINCO);
+                 {if (true) return 5;}
       break;
     case SEIS:
       jj_consume_token(SEIS);
+                 {if (true) return 6;}
       break;
     case SETE:
       jj_consume_token(SETE);
+                 {if (true) return 7;}
       break;
     case OITO:
       jj_consume_token(OITO);
+                 {if (true) return 8;}
       break;
     case NOVE:
       jj_consume_token(NOVE);
+                 {if (true) return 9;}
       break;
     default:
       jj_la1[6] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void dezena() throws ParseException {
+  static final public int dezena() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DEZ:
       jj_consume_token(DEZ);
+                 {if (true) return 10;}
       break;
     case VINTE:
       jj_consume_token(VINTE);
+                 {if (true) return 20;}
       break;
     case TRINTA:
       jj_consume_token(TRINTA);
+                 {if (true) return 30;}
       break;
     default:
       jj_la1[7] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
   }
 
   static private boolean jj_initialized_once = false;
