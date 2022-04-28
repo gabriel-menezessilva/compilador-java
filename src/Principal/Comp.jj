@@ -1,0 +1,115 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+  static = true;
+}
+
+PARSER_BEGIN(Comp)
+package Principal;
+
+public class Comp
+{
+  public static void main(String args []) throws ParseException
+  {
+    Comp parser = new Comp(System.in);
+    System.out.println("Reading from standard input...");
+  }
+}
+
+PARSER_END(Comp)
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+
+SKIP :
+{
+  "/*" : COMENTARIO
+}
+
+< COMENTARIO >
+SKIP :
+{
+  "*/" : DEFAULT
+| 
+  < ~[ ] >
+}
+
+TOKEN : /* COMENTARIO */
+{
+  < COMENTAR : "//" >
+}
+
+TOKEN : /* OPERADORES */
+{
+  < ADICAO : "+" >
+| < SUBTRACAO : "-" >
+| < MULTIPLICACAO : "*" >
+| < DIVISAO : "/" >
+| < POTENCIA : "^" >
+}
+
+TOKEN : /* REGRA PARA IDENTIFICAR VARIAVEL */
+{
+  < IDENTIFICADOR : ([ "A"-"Z", "a"-"z", "_" ] [ "A"-"Z", "a"-"z", "_", "-" ])* >
+}
+
+TOKEN : /* ATRIBUICAO */
+{
+  < ATRIBUICAO : "=" >
+}
+
+TOKEN : /* TIPOS DE DADOS */
+{
+  < STRING : "\".*\"" >
+| < NUMBER : ([ "0"-"9" ])+ "." ([ "0"-"9" ])* >
+}
+
+TOKEN : /* OPERADORES LÓGICOS */
+{
+  < MAIOR_QUE : ">" >
+| < MAIOR_IGUAL : ">=" >
+| < MENOR_QUE : "<" >
+| < MENOR_IGUAL : "<=" >
+| < EQUIVALENTE : "==" >
+| < DIFERENTE : "!=" >
+| < NEGACAO : "!" >
+| < AND : "&&" >
+| < OU : "||" >
+| < PERCENTUAL : "%" >
+}
+
+TOKEN :
+{
+  < ABRE_CHAVES : "{" >
+| < FECHA_CHAVES : "}" >
+| < ABRE_PARENTESE : "(" >
+| < FECHA_PARENTESE : ")" >
+}
+
+TOKEN :
+{
+  < PT_VIRG : ";" >
+| < VIRGULA : "," >
+| < PONTO : "." >
+}
+
+TOKEN : /* COMANDOS */
+{
+  < INPUT : "input" >
+| < IMPRIMIR : "print" >
+| < SE : "if" >
+| < FIM_SE : "endif" >
+| < SENAO : "else" >
+| < ENQUANTO : "while" >
+| < PARAR : "break" >
+| < RETORNE : "return" >
+| < STRING_TYPE : "string" >
+| < NUMBER_TYPE : "number" >
+}
