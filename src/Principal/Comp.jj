@@ -1,20 +1,42 @@
-/**
- * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
- */
 options
 {
-  static = true;
+  static = false;
+  //DEBUG_PARSER = true;
+  //DEBUG_TOKEN_MANAGER = true;
+  //DEBUG = true;
 }
 
 PARSER_BEGIN(Comp)
 package Principal;
+import java.io.*;
 
 public class Comp
 {
   public static void main(String args []) throws ParseException
   {
-    Comp parser = new Comp(System.in);
-    System.out.println("Reading from standard input...");
+    int cont = 1;
+    while (cont <= 6)
+    {
+      System.out.println("\n\n\nIniciando leitura....");
+      try
+      {
+        Comp x = new Comp(new FileInputStream("assets\\3-3 exemplo" + cont + ".txt"));
+        System.out.println("Leitura feita....");
+        System.out.println("\n\t\tIniciando analisador do exemplo " + cont + "....\n");
+        x.S();
+        cont++;
+      }
+      catch (FileNotFoundException e)
+      {
+        System.out.println("Arquivo nao encontrado");
+        cont++;
+      }
+      catch (TokenMgrError e)
+      {
+        System.out.println("\nErro lexico\n" + e.getMessage());
+        cont++;
+      }
+    }
   }
 }
 
@@ -57,7 +79,7 @@ TOKEN : /* OPERADORES */
 
 TOKEN : /* REGRA PARA IDENTIFICAR VARIAVEL */
 {
-  < IDENTIFICADOR : ([ "A"-"Z", "a"-"z", "_" ] [ "A"-"Z", "a"-"z", "_", "-" ])* >
+  < IDENTIFICADOR : 	"@" ([ "A"-"Z", "a"-"z", "_", "-", "0"-"9" ])* >
 }
 
 TOKEN : /* ATRIBUICAO */
@@ -67,7 +89,12 @@ TOKEN : /* ATRIBUICAO */
 
 TOKEN : /* TIPOS DE DADOS */
 {
-  < STRING : "\".*\"" >
+  < STRING :
+    ("'")
+    (
+      ([ "A"-"Z", "a"-"z", "0"-"9", " ", "+", "-", "*", "/", ".", ",", "=", "!", ":", ";", "%", "(", ")" ])*
+    )
+    ("'") >
 | < NUMBER : ([ "0"-"9" ])+ "." ([ "0"-"9" ])* >
 }
 
@@ -112,4 +139,15 @@ TOKEN : /* COMANDOS */
 | < RETORNE : "return" >
 | < STRING_TYPE : "string" >
 | < NUMBER_TYPE : "number" >
+}
+
+JAVACODE void S()
+{
+  Token t;
+  do
+  {
+    t = getNextToken();
+    System.out.println(tokenImage [ t.kind ] + "\t" + t.image);
+  }
+  while (t.kind != EOF);
 }

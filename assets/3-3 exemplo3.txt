@@ -1,39 +1,37 @@
-inicio
 
    /*testes com expressões, operadores e precedência*/
 
-   				number Value,ei,bi,ci,di,i,ef,gi;
+   		number @Value,@ei,@bi,@ci,@di,@i,@ef,@gi;
 
-            	number ecs,uai,zi;
+            	number @ecs,@uai,@zi;
 
-            	string es1, es2, es3;
+            	string @es1, @es2, @es3;
 
-   Value = 78 + 58 - (34 - 52) - 23 * 94;
+   @Value = 78.0 + 58.0 - (34.0 - 52.0) - 23.0 * 94.0;
 
-   ei = ecs + 4 * 5 ^ 2;
+   @ei = @ecs + 4.0 * 5.0 ^ 2.0;
 
-   bi = 6 + 7 * 23 ^ ecs;
+   @bi = 6.0 + 7.0 * 23.0 ^ @ecs;
 
-   ci = 14 ^ 62 * 43 + ecs;
+   @ci = 14.0 ^ 62.0 * 43.0 + @ecs;
 
-   di = ecs ^ 52 * 36 + 24;
+   @di = @ecs ^ 52.0 * 36.0 + 24.0;
 
-   i = -30--25;
+   @i = -30.0 - -25.0;
 
-   ef = ecs--28;
+   @ef = @ecs - -28.0;
 
-   gi = 15 + ecs * 27 > 36 - uai || 54 == zi and 55 + 14 < ( 67 + zi ) *
+   @gi = 15.0 + @ecs * 27.0 > 36.0 - @uai || 54.0 == @zi && 55.0 + 14.0 < ( 67.0 + @zi ) *
 
-        ( 57 - ( 48 - 39 )) && !!! (ecs > uai) + zi;
+        ( 57.0 - ( 48.0 - 39.0 )) && !!! (@ecs > @uai) + @zi;
 
-   es1 = "oi";
+   @es1 = 'oi';
 
-   es2 = "mundo";
+   @es2 = 'mundo';
 
-   es3 = es1 + " " + es2 + "!";
+   @es3 = @es1 + ' ' + @es2 + '!';
 
-   print (Value + " " + ei + " " + bi + " " + ci + " " + di + " " + i + " " + ef + " " + gi + " " + es1 + " " + es2 + " " + es3 + " ");
+   print (@Value + ' ' + @ei + ' ' + @bi + ' ' + @ci + ' ' + @di + ' ' + @i + ' ' + @ef + ' ' + @gi + ' ' + @es1 + ' ' + @es2 + ' ' + @es3 + ' ');
 	
 	/* Deve imprimir Value ei bi ci di i ef gi ecs uai zi es1 es2 es3 */
 
-fim

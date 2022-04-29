@@ -1,22 +1,19 @@
-inicio
 
-   // calcula media de muitos valores
+   /*calcula media de muitos valores*/
 
-   number soma, valor, qtde;
+   number @soma, @valor, @qtde;
 
-   qtde = input("quantos valores:");
+   @qtde = input('quantos valores:');
 
-   soma = 0;
+   @soma = 0.0;
 
-   cont = 1;
+   number @cont = 1.0;
 
-   While (cont <= qtde) {
+   while (@cont <= @qtde) {
 
-      valor = input("");
+      @valor = input('');
 
-      soma = soma + valor;
+      @soma = @soma + @valor;
    }
 
-   print("Media:" + soma/qtde);
-
-fim
+   print('Media:' + @soma/@qtde);

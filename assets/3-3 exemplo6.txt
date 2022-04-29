@@ -1,62 +1,60 @@
-inicio
-
    /* Programa exemplo
 
-   Calcula média final segundo critérios da FAESA */
+   Calcula media final segundo criterios da FAESA */
 
  
 
-   number Nota1, Nota2, Nota3, MediaSemestral, MediaFinal, PrFinal, Faltas;
+   number @Nota1, @Nota2, @Nota3, @MediaSemestral, @MediaFinal, @PrFinal, @Faltas;
 
-   string Situacao;
-
- 
-
-   print("entre com as duas notas:");
-
-   Nota1 = input("");
-   Nota2 = input("");
-   Nota3 = input("");
-
-   Faltas = input("Entre com o percentual de faltas:"); 
+   string @Situacao;
 
  
 
-   MediaSemestral = (Nota1+Nota2+Nota3)/3;
+   print('entre com as duas notas:');
 
-   MediaFinal = MediaSemestral;
+   @Nota1 = input('');
+   @Nota2 = input('');
+   @Nota3 = input('');
+
+   @Faltas = input('Entre com o percentual de Faltas:'); 
+
+ 
+
+   @MediaSemestral = (@Nota1+@Nota2+@Nota3)/3.0;
+
+   @MediaFinal = @MediaSemestral;
 
     
 
-  if (Faltas > 50 || (Faltas > 25 && MediaSemestral < 1.5) ) {
+  if (@Faltas > 50.0 || (@Faltas > 25.0 && @MediaSemestral < 1.5) ) {
 
-      situacao = "reprovado por faltas";
+      @Situacao = 'reprovado por Faltas';
 
    } else {
 
-     if (MediaSemestral < 1.5 ) {
+     if (@MediaSemestral < 1.5 ) {
 
-         situacao = "reprovado por nota";
+         @Situacao = 'reprovado por nota';
 
       } else {
 
-        if (MediaSemestral < 7 ) {
+        if (@MediaSemestral < 7.0 ) {
 
-            print("Nota mínima para a prova final:" + (5 - MediaSemestral * 0.4)/0.6);
+            print('Nota minima para a prova final:' + (5.0 - @MediaSemestral * 0.4)/0.6);
 
-            PrFinal = input("Entre com a nota da prova final:"); 
+            @PrFinal = input('Entre com a nota da prova final:'); 
 
-            MediaFinal = MediaSemestral * 0.4 + PrFinal * 0.6 ;
+            @MediaFinal = @MediaSemestral * 0.4 + @PrFinal * 0.6 ;
 
          } endif;
 
-        if (MediaFinal >= 5 ) {
+        if (@MediaFinal >= 5.0 ) {
 
-            Situacao = "aprovado";
+            @Situacao = 'aprovado';
 
          } else {
 
-            Situacao = "reprovado por nota";
+            @Situacao = 'reprovado por nota';
 
          } endif;
 
@@ -64,6 +62,5 @@ inicio
 
    } endif;
 
-   print("Média final é:" + MediaFinal + "; Situacao:" + Situacao + "; Faltas(%):" + PercentualFaltas);
+   print('Media final e:' + @MediaFinal + '; Situacao:' + @Situacao + '; Faltas(%):' + @PercentualFaltas);
 
-fim
