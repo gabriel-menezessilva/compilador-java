@@ -132,17 +132,9 @@ TOKEN : /* COMANDOS */
 | < RETORNE : "return" >
 | < STRING_TYPE : "string" >
 | < NUMBER_TYPE : "number" >
-}
+| < TYPE: "number" | "string" >
+|	< PROGRAMA: "program" >
 
-TOKEN : /* PALAVRAS RESERVADAS */ 
-{
-	< PROGRAMA: "programa" >
-| < TIPO: "num" | "texto" >
-| < SE: "se" >
-| < SENAO: "senao" >
-| < ENQUANTO: "enqnto" >	
-| < LEIA: "leia" >
-| < ESCREVA: "escreva" >
 }
 
 void expressao() : { }
