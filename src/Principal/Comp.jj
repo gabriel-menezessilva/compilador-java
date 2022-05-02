@@ -80,6 +80,7 @@ TOKEN : /* TIPOS DE DADOS */
 TOKEN : /* OPERADORES RELACIONAIS */
 {
   < MAIOR_QUE : ">" >
+| < ATRIBUICAO: ":=" >
 | < MAIOR_IGUAL : ">=" >
 | < MENOR_QUE : "<" >
 | < MENOR_IGUAL : "<=" >
