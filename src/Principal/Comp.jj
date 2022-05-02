@@ -50,31 +50,10 @@ SKIP :
 | "\n"
 }
 
-SKIP :
-{
-  "/*" : COMENTARIO
-}
-
-< COMENTARIO >
-SKIP :
-{
-  "*/" : DEFAULT
-| 
-  < ~[ ] >
-}
-
-TOKEN : /* COMENTARIO */
-{
-  < COMENTAR : "//" >
-}
-
-TOKEN : /* OPERADORES */
-{
-  < ADICAO : "+" >
-| < SUBTRACAO : "-" >
-| < MULTIPLICACAO : "*" >
-| < DIVISAO : "/" >
-| < POTENCIA : "^" >
+// COMENTARIOS 
+SPECIAL_TOKEN : {
+	<COMENTARIO: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+	| <COMENTARIOLINHA: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")> 
 }
 
 TOKEN : /* REGRA PARA IDENTIFICAR VARIAVEL */
@@ -98,7 +77,7 @@ TOKEN : /* TIPOS DE DADOS */
 | < NUMBER : ([ "0"-"9" ])+ "." ([ "0"-"9" ])* >
 }
 
-TOKEN : /* OPERADORES LÓGICOS */
+TOKEN : /* OPERADORES RELACIONAIS */
 {
   < MAIOR_QUE : ">" >
 | < MAIOR_IGUAL : ">=" >
@@ -106,13 +85,26 @@ TOKEN : /* OPERADORES LÓGICOS */
 | < MENOR_IGUAL : "<=" >
 | < EQUIVALENTE : "==" >
 | < DIFERENTE : "!=" >
-| < NEGACAO : "!" >
-| < AND : "&&" >
-| < OU : "||" >
 | < PERCENTUAL : "%" >
 }
 
-TOKEN :
+TOKEN : /* OPERADORES LOGICOS */
+{
+  < NEGACAO : "!" >
+| < AND : "&&" >
+| < OU : "||" >
+}
+
+TOKEN : /* OPERADORES ARITMETICOS */
+{
+  < ADICAO : "+" >
+| < SUBTRACAO : "-" >
+| < MULTIPLICACAO : "*" >
+| < DIVISAO : "/" >
+| < POTENCIA : "^" >
+}
+
+TOKEN : /* SEPARADORES */
 {
   < ABRE_CHAVES : "{" >
 | < FECHA_CHAVES : "}" >
@@ -139,6 +131,57 @@ TOKEN : /* COMANDOS */
 | < RETORNE : "return" >
 | < STRING_TYPE : "string" >
 | < NUMBER_TYPE : "number" >
+}
+
+TOKEN : /* PALAVRAS RESERVADAS */ 
+{
+	< PROGRAMA: "programa" >
+| < TIPO: "num" | "texto" >
+| < SE: "se" >
+| < SENAO: "senao" >
+| < ENQUANTO: "enqnto" >	
+| < LEIA: "leia" >
+| < ESCREVA: "escreva" >
+}
+
+void expressao() : { }
+{
+	termo1() [(<OU>) termo1()]
+}
+
+void termo1() : { }
+{
+  termo2() [(<E>) termo2()]
+}
+
+void termo2(): { }
+{
+  termo3() [(<MAIOR_QUE> |<MENOR_QUE> |<EQUIVALENTE> |<DIFERENTE>|<MAIOR_IGUAL>|<MENOR_IGUAL>)* termo3()]
+}
+
+void termo3(): { }
+{
+  termo4() [(<ADICAO> termo4() | <SUBTRACAO>  termo4())]
+}
+
+void termo4(): { }
+{
+  termo5() [(<MULTIPLICACAO> termo5() | <DIVISAO>  termo5())]
+}
+
+void termo5(): { }
+{
+  termo6() [(<POTENCIA> termo6())]
+}
+
+void termo6(): { }
+{
+  termo7() [(<NAO> termo7())]
+}
+
+void termo7(): { }
+{
+  (<NUMBER> | <ABRE_PARENTESE> expressao() <FECHA_PARENTESE>)
 }
 
 JAVACODE void S()
