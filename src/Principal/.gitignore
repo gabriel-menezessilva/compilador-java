@@ -6,3 +6,5 @@
 /SimpleCharStream.java
 /Token.java
 /TokenMgrError.java
+/Comp.java
+/CompTokenManager.java

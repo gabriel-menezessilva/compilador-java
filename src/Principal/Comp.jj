@@ -1,9 +1,9 @@
 options
 {
   static = false;
-  //DEBUG_PARSER = true;
+  DEBUG_PARSER = true;
   //DEBUG_TOKEN_MANAGER = true;
-  //DEBUG = true;
+  DEBUG = true;
 }
 
 PARSER_BEGIN(Comp)
@@ -15,7 +15,7 @@ public class Comp
   public static void main(String args []) throws ParseException
   {
     int cont = 1;
-    while (cont <= 6)
+    while (cont <= 1)
     {
       System.out.println("\n\n\nIniciando leitura....");
       try
@@ -51,9 +51,25 @@ SKIP :
 }
 
 // COMENTARIOS 
-SPECIAL_TOKEN : {
-	<COMENTARIO: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
-	| <COMENTARIOLINHA: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")> 
+SPECIAL_TOKEN :
+{
+  < COMENTARIO :
+    "/*" (~[ "*" ])* "*"
+    (
+      "*"
+    |
+      (
+        ~[ "*", "/" ] (~[ "*" ])* "*"
+      )
+    )*
+    "/" >
+| < COMENTARIOLINHA :
+    "//" (~[ "\n", "\r" ])*
+    (
+      "\n"
+    | "\r"
+    | "\r\n"
+    ) >
 }
 
 TOKEN : /* REGRA PARA IDENTIFICAR VARIAVEL */
@@ -80,7 +96,6 @@ TOKEN : /* TIPOS DE DADOS */
 TOKEN : /* OPERADORES RELACIONAIS */
 {
   < MAIOR_QUE : ">" >
-| < ATRIBUICAO: ":=" >
 | < MAIOR_IGUAL : ">=" >
 | < MENOR_QUE : "<" >
 | < MENOR_IGUAL : "<=" >
@@ -132,49 +147,105 @@ TOKEN : /* COMANDOS */
 | < RETORNE : "return" >
 | < STRING_TYPE : "string" >
 | < NUMBER_TYPE : "number" >
-| < TYPE: "number" | "string" >
-|	< PROGRAMA: "program" >
-
+| < TYPE :
+    "number"
+  | "string" >
+| 	< PROGRAMA : "program" >
 }
 
-void expressao() : { }
+/*
+
+
+*/
+void expressao() :
+{}
 {
-	termo1() [(<OU>) termo1()]
+  termo1() [ (< OU >) termo1() ]
 }
 
-void termo1() : { }
+void termo1() :
+{}
 {
-  termo2() [(<E>) termo2()]
+  termo2() [ (< AND >) termo2() ]
 }
 
-void termo2(): { }
+void termo2() :
+{}
 {
-  termo3() [(<MAIOR_QUE> |<MENOR_QUE> |<EQUIVALENTE> |<DIFERENTE>|<MAIOR_IGUAL>|<MENOR_IGUAL>)* termo3()]
+  termo3()
+  [
+    (
+      < MAIOR_QUE >
+    | < MENOR_QUE >
+    | < EQUIVALENTE >
+    | < DIFERENTE >
+    | < MAIOR_IGUAL >
+    | < MENOR_IGUAL >
+    )*
+    termo3()
+  ]
 }
 
-void termo3(): { }
+void termo3() :
+{}
 {
-  termo4() [(<ADICAO> termo4() | <SUBTRACAO>  termo4())]
+  termo4()
+  [
+    (
+      < ADICAO > termo4()
+    | < SUBTRACAO > termo4()
+    )
+  ]
 }
 
-void termo4(): { }
+void termo4() :
+{}
 {
-  termo5() [(<MULTIPLICACAO> termo5() | <DIVISAO>  termo5())]
+  termo5()
+  [
+    (
+      < MULTIPLICACAO > termo5()
+    | < DIVISAO > termo5()
+    )
+  ]
 }
 
-void termo5(): { }
+void termo5() :
+{}
 {
-  termo6() [(<POTENCIA> termo6())]
+  termo6()
+  [
+    (
+      < POTENCIA > termo6()
+    )
+  ]
 }
 
-void termo6(): { }
+void termo6() :
+{}
 {
-  termo7() [(<NAO> termo7())]
+  termo7()
+  [
+    (
+      < NEGACAO > termo7()
+    )
+  ]
 }
 
-void termo7(): { }
+void termo7() :
+{}
 {
-  (<NUMBER> | <ABRE_PARENTESE> expressao() <FECHA_PARENTESE>)
+  (
+    < NUMBER >
+  | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >
+  )
+}
+
+void printar():
+{}
+
+{
+	< IMPRIMIR > < ABRE_PARENTESE > < STRING > < FECHA_PARENTESE > < PT_VIRG >
 }
 
 JAVACODE void S()
