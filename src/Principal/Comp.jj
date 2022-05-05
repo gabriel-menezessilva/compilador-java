@@ -1,8 +1,8 @@
 options
 {
   static = false;
-  //DEBUG_PARSER = true;
-  DEBUG_TOKEN_MANAGER = true;
+  DEBUG_PARSER = true;
+  //DEBUG_TOKEN_MANAGER = true;
   DEBUG = true;
 }
 
