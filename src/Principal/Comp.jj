@@ -1,8 +1,8 @@
 options
 {
   static = false;
-  DEBUG_PARSER = true;
-  //DEBUG_TOKEN_MANAGER = true;
+  //DEBUG_PARSER = true;
+  DEBUG_TOKEN_MANAGER = true;
   DEBUG = true;
 }
 
@@ -23,7 +23,9 @@ public class Comp
         Comp x = new Comp(new FileInputStream("assets\\3-3 exemplo" + cont + ".txt"));
         System.out.println("Leitura feita....");
         System.out.println("\n\t\tIniciando analisador do exemplo " + cont + "....\n");
-        x.S();
+        //x.S();
+        System.out.println();
+        x.inicio();
         cont++;
       }
       catch (FileNotFoundException e)
@@ -34,6 +36,11 @@ public class Comp
       catch (TokenMgrError e)
       {
         System.out.println("\nErro lexico\n" + e.getMessage());
+        cont++;
+      }
+      catch (ParseException e)
+      {
+        System.out.println("\nErro no parse\n" + e.getMessage());
         cont++;
       }
     }
@@ -87,7 +94,12 @@ TOKEN : /* TIPOS DE DADOS */
   < STRING :
     ("'")
     (
-      ([ "A"-"Z", "a"-"z", "0"-"9", " ", "+", "-", "*", "/", ".", ",", "=", "!", ":", ";", "%", "(", ")" ])*
+      ([ "A"-"Z", "a"-"z", "0"-"9", 
+      " ", "+", "-", "*", "/", ".", 
+      ",", "=", "!", ":", ";", "%", 
+      "(", ")", "\u00e0"-"\u00fa", "\u00c0"-"\u00da", 
+      "@", "$", "#", ">", "<", "?", 
+      "[", "]", "{", "}", "|", "\\" ])*
     )
     ("'") >
 | < NUMBER : ([ "0"-"9" ])+ "." ([ "0"-"9" ])* >
@@ -147,16 +159,17 @@ TOKEN : /* COMANDOS */
 | < RETORNE : "return" >
 | < STRING_TYPE : "string" >
 | < NUMBER_TYPE : "number" >
-| < TYPE :
-    "number"
-  | "string" >
-| 	< PROGRAMA : "program" >
 }
 
 /*
 
 
 */
+
+
+
+
+
 void expressao() :
 {}
 {
@@ -241,11 +254,94 @@ void termo7() :
   )
 }
 
-void printar():
-{}
+/*---------------------------------------*/
 
+/* GLC do "inicio" */
+void inicio() :
+{}
 {
-	< IMPRIMIR > < ABRE_PARENTESE > < STRING > < FECHA_PARENTESE > < PT_VIRG >
+  (
+    corpoCodigo()
+  )*
+  < EOF >
+}
+
+/*
+	GLC do corpo do código
+Como seria o corpo do codigo inicialmente
+	*/
+void corpoCodigo() :
+{}
+{
+  declaraVariaveis() comandos()
+}
+
+/*
+	GLC da declaração de variaveis
+aqui estamos definindo como vamos declarar
+uma variavel
+	*/
+void declaraVariaveis() :
+{}
+{
+  (
+    < NUMBER_TYPE >
+  | < STRING_TYPE >
+  )
+  variaveis()
+}
+
+/*
+	GLC das variaveis
+aqui estamos definindo como são identificadas
+as variaveis
+*/
+void variaveis() :
+{}
+{
+  < IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)*
+}
+
+/*
+	GLC dos comandos
+aqui estamos dizenso que nosso código
+precisa ter pelo menos um comando
+
+	 */
+void comandos() :
+{}
+{
+  (
+    comando()
+  )+
+}
+
+/*
+	GLC do comando
+aqui estamos definindo quais os tokens que definem um comando, por exemplo:
+
+print("Texto exibido"); --> é um comando
+ */
+void comando() :
+{}
+{
+  (
+    < INPUT >
+  |
+    (
+      < IMPRIMIR > < ABRE_PARENTESE >
+      (
+        < STRING >
+      | < IDENTIFICADOR >
+      )*
+      < FECHA_PARENTESE > < PT_VIRG >
+    ) /* MONTANDO A "EBNF" DO COMANDO PRINT */
+  | < SE >
+  | < FIM_SE >
+  | < SENAO >
+  | < ENQUANTO >
+  | < PARAR >
+  )
 }
 
 JAVACODE void S()

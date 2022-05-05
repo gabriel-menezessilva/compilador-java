@@ -1,1 +1,2 @@
-print('Welcome to the jungle!');
+number @idade
+print(@idade);
