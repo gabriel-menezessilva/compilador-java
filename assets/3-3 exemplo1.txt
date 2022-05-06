@@ -1,2 +1,9 @@
-number @idade
+number @idade;
+
 print(@idade);
+
+if(2 == 2){
+	print('ok');
+}else{
+	print('ok tambem, risos');
+}

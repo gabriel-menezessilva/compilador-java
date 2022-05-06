@@ -248,10 +248,7 @@ void termo6() :
 void termo7() :
 {}
 {
-  (
-    < NUMBER >
-  | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >
-  )
+  (< NUMBER > | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >)
 }
 
 /*---------------------------------------*/
@@ -288,9 +285,9 @@ void declaraVariaveis() :
     < NUMBER_TYPE >
   | < STRING_TYPE >
   )
-  variaveis()
+  variaveis() < PT_VIRG > 
 }
-
+  
 /*
 	GLC das variaveis
 aqui estamos definindo como são identificadas
@@ -299,7 +296,7 @@ as variaveis
 void variaveis() :
 {}
 {
-  < IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)*
+  (< IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)* (< ATRIBUICAO > (< IDENTIFICADOR > /*| expressao()*/ | < STRING > | < NUMBER > ))*)
 }
 
 /*
@@ -326,23 +323,15 @@ void comando() :
 {}
 {
   (
-    < INPUT >
-  |
-    (
-      < IMPRIMIR > < ABRE_PARENTESE >
-      (
-        < STRING >
-      | < IDENTIFICADOR >
-      )*
-      < FECHA_PARENTESE > < PT_VIRG >
-    ) /* MONTANDO A "EBNF" DO COMANDO PRINT */
-  | < SE >
-  | < FIM_SE >
-  | < SENAO >
-  | < ENQUANTO >
-  | < PARAR >
+    (< INPUT > < ABRE_PARENTESE >    (< STRING >(< ADICAO > (< IDENTIFICADOR > | < STRING > ))* | < IDENTIFICADOR > (< ADICAO > (< IDENTIFICADOR > | < STRING > ))* | expressao()(< ADICAO > (< IDENTIFICADOR > | < STRING > ))*)* < FECHA_PARENTESE > < PT_VIRG > ) /* MONTANDO A "EBNF" DO COMANDO INPUT */
+  | (< IMPRIMIR > < ABRE_PARENTESE > (< STRING >(< ADICAO > (< IDENTIFICADOR > | < STRING > ))* | < IDENTIFICADOR > (< ADICAO > (< IDENTIFICADOR > | < STRING > ))* | expressao()(< ADICAO > (< IDENTIFICADOR > | < STRING > ))*)* < FECHA_PARENTESE > < PT_VIRG > ) /* MONTANDO A "EBNF" DO COMANDO PRINT */
+  | (< SE > < ABRE_PARENTESE > expressao()  < FECHA_PARENTESE > < ABRE_CHAVES > comando() < FECHA_CHAVES > (< SENAO > < ABRE_CHAVES > comando() < FECHA_CHAVES > )* < FIM_SE >) /* MONTANDO A "EBNF" DA ESTRUTURA DO IF */
+  | (< ENQUANTO > < ABRE_PARENTESE > expressao()< FECHA_PARENTESE > < ABRE_CHAVES > comando() < FECHA_CHAVES >)
+  | (< PARAR > < PT_VIRG >)
   )
 }
+
+
 
 JAVACODE void S()
 {

@@ -321,6 +321,7 @@ uma variavel
         throw new ParseException();
       }
       variaveis();
+      jj_consume_token(PT_VIRG);
     } finally {
       trace_return("declaraVariaveis");
     }
@@ -348,6 +349,33 @@ as variaveis
         jj_consume_token(VIRGULA);
         jj_consume_token(IDENTIFICADOR);
       }
+      label_4:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case ATRIBUICAO:
+          ;
+          break;
+        default:
+          jj_la1[15] = jj_gen;
+          break label_4;
+        }
+        jj_consume_token(ATRIBUICAO);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IDENTIFICADOR:
+          jj_consume_token(IDENTIFICADOR);
+          break;
+        case STRING:
+          jj_consume_token(STRING);
+          break;
+        case NUMBER:
+          jj_consume_token(NUMBER);
+          break;
+        default:
+          jj_la1[16] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
     } finally {
       trace_return("variaveis");
     }
@@ -362,22 +390,20 @@ precisa ter pelo menos um comando
   final public void comandos() throws ParseException {
     trace_call("comandos");
     try {
-      label_4:
+      label_5:
       while (true) {
         comando();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case INPUT:
         case IMPRIMIR:
         case SE:
-        case FIM_SE:
-        case SENAO:
         case ENQUANTO:
         case PARAR:
           ;
           break;
         default:
-          jj_la1[15] = jj_gen;
-          break label_4;
+          jj_la1[17] = jj_gen;
+          break label_5;
         }
       }
     } finally {
@@ -397,30 +423,213 @@ print("Texto exibido"); --> é um comando
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INPUT:
         jj_consume_token(INPUT);
-        break;
-      case IMPRIMIR:
-        jj_consume_token(IMPRIMIR);
         jj_consume_token(ABRE_PARENTESE);
-        label_5:
+        label_6:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IDENTIFICADOR:
           case STRING:
+          case NUMBER:
+          case ABRE_PARENTESE:
             ;
             break;
           default:
-            jj_la1[16] = jj_gen;
-            break label_5;
+            jj_la1[18] = jj_gen;
+            break label_6;
           }
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case STRING:
             jj_consume_token(STRING);
+            label_7:
+            while (true) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case ADICAO:
+                ;
+                break;
+              default:
+                jj_la1[19] = jj_gen;
+                break label_7;
+              }
+              jj_consume_token(ADICAO);
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case IDENTIFICADOR:
+                jj_consume_token(IDENTIFICADOR);
+                break;
+              case STRING:
+                jj_consume_token(STRING);
+                break;
+              default:
+                jj_la1[20] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
+              }
+            }
             break;
           case IDENTIFICADOR:
             jj_consume_token(IDENTIFICADOR);
+            label_8:
+            while (true) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case ADICAO:
+                ;
+                break;
+              default:
+                jj_la1[21] = jj_gen;
+                break label_8;
+              }
+              jj_consume_token(ADICAO);
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case IDENTIFICADOR:
+                jj_consume_token(IDENTIFICADOR);
+                break;
+              case STRING:
+                jj_consume_token(STRING);
+                break;
+              default:
+                jj_la1[22] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
+              }
+            }
+            break;
+          case NUMBER:
+          case ABRE_PARENTESE:
+            expressao();
+            label_9:
+            while (true) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case ADICAO:
+                ;
+                break;
+              default:
+                jj_la1[23] = jj_gen;
+                break label_9;
+              }
+              jj_consume_token(ADICAO);
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case IDENTIFICADOR:
+                jj_consume_token(IDENTIFICADOR);
+                break;
+              case STRING:
+                jj_consume_token(STRING);
+                break;
+              default:
+                jj_la1[24] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
+              }
+            }
             break;
           default:
-            jj_la1[17] = jj_gen;
+            jj_la1[25] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
+        }
+        jj_consume_token(FECHA_PARENTESE);
+        jj_consume_token(PT_VIRG);
+        break;
+      case IMPRIMIR:
+        jj_consume_token(IMPRIMIR);
+        jj_consume_token(ABRE_PARENTESE);
+        label_10:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case IDENTIFICADOR:
+          case STRING:
+          case NUMBER:
+          case ABRE_PARENTESE:
+            ;
+            break;
+          default:
+            jj_la1[26] = jj_gen;
+            break label_10;
+          }
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case STRING:
+            jj_consume_token(STRING);
+            label_11:
+            while (true) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case ADICAO:
+                ;
+                break;
+              default:
+                jj_la1[27] = jj_gen;
+                break label_11;
+              }
+              jj_consume_token(ADICAO);
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case IDENTIFICADOR:
+                jj_consume_token(IDENTIFICADOR);
+                break;
+              case STRING:
+                jj_consume_token(STRING);
+                break;
+              default:
+                jj_la1[28] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
+              }
+            }
+            break;
+          case IDENTIFICADOR:
+            jj_consume_token(IDENTIFICADOR);
+            label_12:
+            while (true) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case ADICAO:
+                ;
+                break;
+              default:
+                jj_la1[29] = jj_gen;
+                break label_12;
+              }
+              jj_consume_token(ADICAO);
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case IDENTIFICADOR:
+                jj_consume_token(IDENTIFICADOR);
+                break;
+              case STRING:
+                jj_consume_token(STRING);
+                break;
+              default:
+                jj_la1[30] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
+              }
+            }
+            break;
+          case NUMBER:
+          case ABRE_PARENTESE:
+            expressao();
+            label_13:
+            while (true) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case ADICAO:
+                ;
+                break;
+              default:
+                jj_la1[31] = jj_gen;
+                break label_13;
+              }
+              jj_consume_token(ADICAO);
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              case IDENTIFICADOR:
+                jj_consume_token(IDENTIFICADOR);
+                break;
+              case STRING:
+                jj_consume_token(STRING);
+                break;
+              default:
+                jj_la1[32] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
+              }
+            }
+            break;
+          default:
+            jj_la1[33] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
@@ -430,21 +639,44 @@ print("Texto exibido"); --> é um comando
         break;
       case SE:
         jj_consume_token(SE);
-        break;
-      case FIM_SE:
+        jj_consume_token(ABRE_PARENTESE);
+        expressao();
+        jj_consume_token(FECHA_PARENTESE);
+        jj_consume_token(ABRE_CHAVES);
+        comando();
+        jj_consume_token(FECHA_CHAVES);
+        label_14:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case SENAO:
+            ;
+            break;
+          default:
+            jj_la1[34] = jj_gen;
+            break label_14;
+          }
+          jj_consume_token(SENAO);
+          jj_consume_token(ABRE_CHAVES);
+          comando();
+          jj_consume_token(FECHA_CHAVES);
+        }
         jj_consume_token(FIM_SE);
-        break;
-      case SENAO:
-        jj_consume_token(SENAO);
         break;
       case ENQUANTO:
         jj_consume_token(ENQUANTO);
+        jj_consume_token(ABRE_PARENTESE);
+        expressao();
+        jj_consume_token(FECHA_PARENTESE);
+        jj_consume_token(ABRE_CHAVES);
+        comando();
+        jj_consume_token(FECHA_CHAVES);
         break;
       case PARAR:
         jj_consume_token(PARAR);
+        jj_consume_token(PT_VIRG);
         break;
       default:
-        jj_la1[18] = jj_gen;
+        jj_la1[35] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -477,7 +709,7 @@ print("Texto exibido"); --> é um comando
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[19];
+  final private int[] jj_la1 = new int[36];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -485,10 +717,10 @@ print("Texto exibido"); --> é um comando
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x100000,0x80000,0x1f800,0x1f800,0x1001fc00,0x600000,0x600000,0x1800000,0x1800000,0x2000000,0x40000,0x10000400,0x0,0x0,0x80000000,0x0,0x280,0x280,0x0,};
+      jj_la1_0 = new int[] {0x100000,0x80000,0x1f800,0x1f800,0x1001fc00,0x600000,0x600000,0x1800000,0x1800000,0x2000000,0x40000,0x10000400,0x0,0x0,0x80000000,0x100,0x680,0x0,0x10000680,0x200000,0x280,0x200000,0x280,0x200000,0x280,0x10000680,0x10000680,0x200000,0x280,0x200000,0x280,0x200000,0x280,0x10000680,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600,0x600,0x0,0xfe,0x0,0x0,0xfe,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600,0x600,0x0,0x0,0x0,0xce,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0xce,};
    }
 
   /** Constructor with InputStream. */
@@ -502,7 +734,7 @@ print("Texto exibido"); --> é um comando
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -516,7 +748,7 @@ print("Texto exibido"); --> é um comando
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -526,7 +758,7 @@ print("Texto exibido"); --> é um comando
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -536,7 +768,7 @@ print("Texto exibido"); --> é um comando
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -545,7 +777,7 @@ print("Texto exibido"); --> é um comando
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -554,7 +786,7 @@ print("Texto exibido"); --> é um comando
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -612,7 +844,7 @@ print("Texto exibido"); --> é um comando
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 19; i++) {
+    for (int i = 0; i < 36; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
