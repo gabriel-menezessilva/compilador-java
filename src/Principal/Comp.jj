@@ -15,7 +15,7 @@ public class Comp
   public static void main(String args []) throws ParseException
   {
     int cont = 1;
-    while (cont <= 1)
+    while (cont <= 6)
     {
       System.out.println("\n\n\nIniciando leitura....");
       try
@@ -102,7 +102,7 @@ TOKEN : /* TIPOS DE DADOS */
       "[", "]", "{", "}", "|", "\\" ])*
     )
     ("'") >
-| < NUMBER : ([ "0"-"9" ])+ "." ([ "0"-"9" ])* >
+| < NUMBER : ([ "0"-"9" ])+ (".")? ([ "0"-"9" ])* >
 }
 
 TOKEN : /* OPERADORES RELACIONAIS */
@@ -248,7 +248,7 @@ void termo6() :
 void termo7() :
 {}
 {
-  (< NUMBER > | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >)
+  (< NUMBER > | < IDENTIFICADOR > | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >)
 }
 
 /*---------------------------------------*/
@@ -270,65 +270,104 @@ Como seria o corpo do codigo inicialmente
 void corpoCodigo() :
 {}
 {
-  declaraVariaveis() comandos()
+  comando()
 }
 
 /*
-	GLC da declaração de variaveis
-aqui estamos definindo como vamos declarar
-uma variavel
-	*/
+	GLC da declaração de variaveis aqui estamos definindo como vamos declarar uma variavel ou definir um valor para ela. 
+*/
 void declaraVariaveis() :
 {}
 {
   (
     < NUMBER_TYPE >
   | < STRING_TYPE >
-  )
-  variaveis() < PT_VIRG > 
+  )?
+  variavel()
 }
   
+/* GLC das variaveis aqui estamos definindo como são identificadas as variaveis */
+void variavel() :
+{}
+{
+  (< IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)* (< ATRIBUICAO > ( expressao() | < STRING > | estruturaInput() ))?)
+}
+
+void saidaMensagemExtOpt() :
+{}
+{
+  (< ADICAO > (expressao() | < STRING >))*
+}
+
+//Estrutura base para saída de mensagem
+// ARUMAR O PROBLEMA DO CONCATENADOR
+void saidaMensagem() :
+{ }
+{
+	< ABRE_PARENTESE >
+
+	(< STRING > saidaMensagemExtOpt() | < IDENTIFICADOR > saidaMensagemExtOpt())*
+	
+    < FECHA_PARENTESE >
+    
+}
+
 /*
-	GLC das variaveis
-aqui estamos definindo como são identificadas
-as variaveis
+ 	Responsável por montar o corpo da função, contendo o começo e o fim das chaves
+  	Exemplo: { comandos }
 */
-void variaveis() :
+void corpoFuncaoBase() :
+{ }
+{
+  < ABRE_CHAVES > (comando())* < FECHA_CHAVES >  
+} 
+
+/*
+	Responsável por montar a expressão e o corpo da função
+    Exemplo:   (expressão) { corpo da expressão}
+*/
+void estruturaFuncaoBase() :
 {}
 {
-  (< IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)* (< ATRIBUICAO > (< IDENTIFICADOR > /*| expressao()*/ | < STRING > | < NUMBER > ))*)
+	< ABRE_PARENTESE >	expressao()	< FECHA_PARENTESE >
+	
+	corpoFuncaoBase()
 }
 
 /*
-	GLC dos comandos
-aqui estamos dizenso que nosso código
-precisa ter pelo menos um comando
-
-	 */
-void comandos() :
+	Responsável por montar a estrutura base do condicional IF
+*/
+void estruturaIF() :
 {}
 {
-  (
-    comando()
-  )+
+  	< SE >	estruturaFuncaoBase()
+		
+   	(< SENAO > corpoFuncaoBase())?
+   
+    < FIM_SE >    
 }
 
-/*
-	GLC do comando
-aqui estamos definindo quais os tokens que definem um comando, por exemplo:
+void estruturaInput() :
+{}
+{
+	< INPUT > saidaMensagem()  
+}
 
-print("Texto exibido"); --> é um comando
- */
+
+/*
+    GLC do comando aqui estamos definindo quais os tokens que definem um comando,
+	Exemplo: print("Texto exibido"); --> é um comando.
+*/
 void comando() :
 {}
 {
-  (
-    (< INPUT > < ABRE_PARENTESE >    (< STRING >(< ADICAO > (< IDENTIFICADOR > | < STRING > ))* | < IDENTIFICADOR > (< ADICAO > (< IDENTIFICADOR > | < STRING > ))* | expressao()(< ADICAO > (< IDENTIFICADOR > | < STRING > ))*)* < FECHA_PARENTESE > < PT_VIRG > ) /* MONTANDO A "EBNF" DO COMANDO INPUT */
-  | (< IMPRIMIR > < ABRE_PARENTESE > (< STRING >(< ADICAO > (< IDENTIFICADOR > | < STRING > ))* | < IDENTIFICADOR > (< ADICAO > (< IDENTIFICADOR > | < STRING > ))* | expressao()(< ADICAO > (< IDENTIFICADOR > | < STRING > ))*)* < FECHA_PARENTESE > < PT_VIRG > ) /* MONTANDO A "EBNF" DO COMANDO PRINT */
-  | (< SE > < ABRE_PARENTESE > expressao()  < FECHA_PARENTESE > < ABRE_CHAVES > comando() < FECHA_CHAVES > (< SENAO > < ABRE_CHAVES > comando() < FECHA_CHAVES > )* < FIM_SE >) /* MONTANDO A "EBNF" DA ESTRUTURA DO IF */
-  | (< ENQUANTO > < ABRE_PARENTESE > expressao()< FECHA_PARENTESE > < ABRE_CHAVES > comando() < FECHA_CHAVES >)
-  | (< PARAR > < PT_VIRG >)
-  )
+  ( (declaraVariaveis())
+  | (estruturaInput()) /* MONTANDO A "EBNF" DO COMANDO INPUT */
+  | (< IMPRIMIR > saidaMensagem()) /* MONTANDO A "EBNF" DO COMANDO PRINT */
+  | ( estruturaIF() ) /* MONTANDO A "EBNF" DA ESTRUTURA DO IF */
+  | (< ENQUANTO > estruturaFuncaoBase())
+  | (< PARAR >)
+  )  < PT_VIRG >
 }
 
 

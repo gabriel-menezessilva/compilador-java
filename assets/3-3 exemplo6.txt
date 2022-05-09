@@ -12,9 +12,9 @@
 
    print('entre com as duas notas:');
 
-   @Nota1 = input('');
-   @Nota2 = input('');
-   @Nota3 = input('');
+   @Nota1 = input();
+   @Nota2 = input();
+   @Nota3 = input();
 
    @Faltas = input('Entre com o percentual de Faltas:'); 
 
