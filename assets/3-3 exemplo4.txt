@@ -16,4 +16,4 @@
       @soma = @soma + @valor;
    };
 
-   print('Media:' + @soma/@qtde);
+   print('Media:' # @soma/@qtde);

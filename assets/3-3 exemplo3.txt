@@ -29,9 +29,9 @@
 
    @es2 = 'mundo';
 
-   @es3 = @es1 + ' ' + @es2 + '!';
+   @es3 = @es1 # ' ' # @es2 # '!';
 
-   print (@Value + ' ' + @ei + ' ' + @bi + ' ' + @ci + ' ' + @di + ' ' + @i + ' ' + @ef + ' ' + @gi + ' ' + @es1 + ' ' + @es2 + ' ' + @es3 + ' ');
+   print (@Value # ' ' # @ei # ' ' # @bi # ' ' # @ci # ' ' # @di # ' ' # @i # ' ' # @ef # ' ' # @gi # ' ' # @es1 # ' ' # @es2 # ' ' # @es3 # ' ');
 	
 	/* Deve imprimir Value ei bi ci di i ef gi ecs uai zi es1 es2 es3 */
 

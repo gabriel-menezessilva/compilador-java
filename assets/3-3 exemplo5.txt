@@ -66,5 +66,5 @@
 
    }endif;
 
-   print('Relaco entre a primeira e segunda datas: ' + @relacao);
+   print('Relaco entre a primeira e segunda datas: ' # @relacao);
 

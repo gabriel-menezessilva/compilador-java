@@ -145,6 +145,7 @@ TOKEN :
   < PT_VIRG : ";" >
 | < VIRGULA : "," >
 | < PONTO : "." >
+| < CONCAT : "#" >
 }
 
 TOKEN : /* COMANDOS */
@@ -173,82 +174,65 @@ TOKEN : /* COMANDOS */
 void expressao() :
 {}
 {
-  termo1() [ (< OU >) termo1() ]
+  termo1() ( < OU > termo1() )*
 }
 
 void termo1() :
 {}
 {
-  termo2() [ (< AND >) termo2() ]
+  termo2() ( < AND > termo2() )*
 }
 
 void termo2() :
 {}
 {
   termo3()
-  [
-    (
-      < MAIOR_QUE >
+  (    ( < MAIOR_QUE >
     | < MENOR_QUE >
     | < EQUIVALENTE >
     | < DIFERENTE >
     | < MAIOR_IGUAL >
     | < MENOR_IGUAL >
-    )*
+    )
     termo3()
-  ]
+  )*  
 }
 
 void termo3() :
 {}
 {
-  termo4()
-  [
-    (
-      < ADICAO > termo4()
-    | < SUBTRACAO > termo4()
-    )
-  ]
+  (< SUBTRACAO >)?  termo4()
+  ((< ADICAO > | < SUBTRACAO >)+ termo4())*
+  
 }
 
 void termo4() :
 {}
 {
   termo5()
-  [
-    (
-      < MULTIPLICACAO > termo5()
-    | < DIVISAO > termo5()
-    )
-  ]
+    ((< MULTIPLICACAO > | < DIVISAO >) termo5())*
 }
 
 void termo5() :
 {}
 {
   termo6()
-  [
-    (
-      < POTENCIA > termo6()
-    )
-  ]
+   (
+     < POTENCIA > termo6()
+   )*
 }
 
 void termo6() :
 {}
 {
-  termo7()
-  [
-    (
-      < NEGACAO > termo7()
-    )
-  ]
+  ((< NEGACAO >)*  termo7())  
+   
 }
 
 void termo7() :
 {}
 {
-  (< NUMBER > | < IDENTIFICADOR > | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >)
+	< NUMBER > | < IDENTIFICADOR > | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >
 }
 
 /*---------------------------------------*/
@@ -279,10 +263,7 @@ void corpoCodigo() :
 void declaraVariaveis() :
 {}
 {
-  (
-    < NUMBER_TYPE >
-  | < STRING_TYPE >
-  )?
+  (< NUMBER_TYPE > | < STRING_TYPE >)?
   variavel()
 }
   
@@ -290,13 +271,13 @@ void declaraVariaveis() :
 void variavel() :
 {}
 {
-  (< IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)* (< ATRIBUICAO > ( expressao() | < STRING > | estruturaInput() ))?)
+  (< IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)* (< ATRIBUICAO > ((expressao() | < STRING > | estruturaInput()) (< CONCAT >)?)+)? )
 }
 
 void saidaMensagemExtOpt() :
 {}
 {
-  (< ADICAO > (expressao() | < STRING >))*
+  (< CONCAT >  (expressao() | < STRING >))*
 }
 
 //Estrutura base para saída de mensagem
@@ -308,8 +289,7 @@ void saidaMensagem() :
 
 	(< STRING > saidaMensagemExtOpt() | < IDENTIFICADOR > saidaMensagemExtOpt())*
 	
-    < FECHA_PARENTESE >
-    
+    < FECHA_PARENTESE >    
 }
 
 /*

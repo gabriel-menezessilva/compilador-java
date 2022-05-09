@@ -40,11 +40,11 @@
 
         if (@MediaSemestral < 7.0 ) {
 
-            print('Nota minima para a prova final:' + (5.0 - @MediaSemestral * 0.4)/0.6);
+            print('Nota minima para a prova final:' # (5.0 - @MediaSemestral * 0.4)/0.6);
 
             @PrFinal = input('Entre com a nota da prova final:'); 
 
-            @MediaFinal = @MediaSemestral * 0.4 + @PrFinal * 0.6 ;
+            @MediaFinal = @MediaSemestral * 0.4 # @PrFinal * 0.6 ;
 
          } endif;
 
@@ -62,5 +62,5 @@
 
    } endif;
 
-   print('Media final e:' + @MediaFinal + '; Situacao:' + @Situacao + '; Faltas(%):' + @PercentualFaltas);
+   print('Media final e:' # @MediaFinal # '; Situacao:' # @Situacao # '; Faltas(%):' # @PercentualFaltas);
 
