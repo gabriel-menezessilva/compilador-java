@@ -23,7 +23,6 @@ public class Comp
         Comp x = new Comp(new FileInputStream("assets\\3-3 exemplo" + cont + ".txt"));
         System.out.println("Leitura feita....");
         System.out.println("\n\t\tIniciando analisador do exemplo " + cont + "....\n");
-        //x.S();
         System.out.println();
         x.inicio();
         cont++;
@@ -162,14 +161,112 @@ TOKEN : /* COMANDOS */
 | < NUMBER_TYPE : "number" >
 }
 
+/*---------------------------------------*/
+
+/* GLC do "inicio" */
+void inicio() :
+{}
+{
+  (
+    comando()
+  )*
+  < EOF >
+}
+
+
 /*
-
-
+    GLC do comando aqui estamos definindo quais os tokens que definem um comando,
+	Exemplo: print("Texto exibido"); --> é um comando.
 */
+void comando() :
+{}
+{
+  ( (declaraVariaveis())
+  | (estruturaInput()) /* MONTANDO A "EBNF" DO COMANDO INPUT */
+  | (< IMPRIMIR > saidaMensagem()) /* MONTANDO A "EBNF" DO COMANDO PRINT */
+  | ( estruturaIF() ) /* MONTANDO A "EBNF" DA ESTRUTURA DO IF */
+  | (< ENQUANTO > estruturaFuncaoBase())
+  | (< PARAR >)
+  )  < PT_VIRG >
+}
+
+/*
+	GLC da declaração de variaveis aqui estamos definindo como vamos declarar uma variavel ou definir um valor para ela. 
+*/
+void declaraVariaveis() :
+{}
+{
+  (< NUMBER_TYPE > | < STRING_TYPE >)?
+  variavel()
+}
+  
+/* GLC das variaveis aqui estamos definindo como são identificadas as variaveis */
+void variavel() :
+{}
+{
+  (< IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)* (< ATRIBUICAO > ((expressao() | < STRING > | estruturaInput()) (< CONCAT >)?)+)? )
+}
+
+void estruturaInput() :
+{}
+{
+	< INPUT > saidaMensagem()  
+}
+
+//Estrutura base para saída de mensagem
+// ARUMAR O PROBLEMA DO CONCATENADOR
+void saidaMensagem() :
+{ }
+{
+	< ABRE_PARENTESE >
+
+	(< STRING > saidaMensagemExtOpt() | < IDENTIFICADOR > saidaMensagemExtOpt())*
+	
+    < FECHA_PARENTESE >    
+}
 
 
+void saidaMensagemExtOpt() :
+{}
+{
+  (< CONCAT >  (expressao() | < STRING >))*
+}
+
+/*
+	Responsável por montar a estrutura base do condicional IF
+*/
+void estruturaIF() :
+{}
+{
+  	< SE >	estruturaFuncaoBase()
+		
+   	(< SENAO > corpoCodigoBase())?
+   
+    < FIM_SE >    
+}
+
+/*
+	Responsável por montar a expressão e o corpo da função
+    Exemplo:   (expressão) { corpo da expressão}
+*/
+void estruturaFuncaoBase() :
+{}
+{
+	< ABRE_PARENTESE >	expressao()	< FECHA_PARENTESE >
+	
+	corpoCodigoBase()
+}
 
 
+/*
+ 	Responsável por montar o corpo da função, contendo o começo e o fim das chaves
+  	Exemplo: { comandos }
+*/
+void corpoCodigoBase() :
+{ }
+{
+  < ABRE_CHAVES > (comando())* < FECHA_CHAVES >  
+} 
 
 void expressao() :
 {}
@@ -233,132 +330,4 @@ void termo7() :
 {}
 {
 	< NUMBER > | < IDENTIFICADOR > | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >
-}
-
-/*---------------------------------------*/
-
-/* GLC do "inicio" */
-void inicio() :
-{}
-{
-  (
-    corpoCodigo()
-  )*
-  < EOF >
-}
-
-/*
-	GLC do corpo do código
-Como seria o corpo do codigo inicialmente
-	*/
-void corpoCodigo() :
-{}
-{
-  comando()
-}
-
-/*
-	GLC da declaração de variaveis aqui estamos definindo como vamos declarar uma variavel ou definir um valor para ela. 
-*/
-void declaraVariaveis() :
-{}
-{
-  (< NUMBER_TYPE > | < STRING_TYPE >)?
-  variavel()
-}
-  
-/* GLC das variaveis aqui estamos definindo como são identificadas as variaveis */
-void variavel() :
-{}
-{
-  (< IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)* (< ATRIBUICAO > ((expressao() | < STRING > | estruturaInput()) (< CONCAT >)?)+)? )
-}
-
-void saidaMensagemExtOpt() :
-{}
-{
-  (< CONCAT >  (expressao() | < STRING >))*
-}
-
-//Estrutura base para saída de mensagem
-// ARUMAR O PROBLEMA DO CONCATENADOR
-void saidaMensagem() :
-{ }
-{
-	< ABRE_PARENTESE >
-
-	(< STRING > saidaMensagemExtOpt() | < IDENTIFICADOR > saidaMensagemExtOpt())*
-	
-    < FECHA_PARENTESE >    
-}
-
-/*
- 	Responsável por montar o corpo da função, contendo o começo e o fim das chaves
-  	Exemplo: { comandos }
-*/
-void corpoFuncaoBase() :
-{ }
-{
-  < ABRE_CHAVES > (comando())* < FECHA_CHAVES >  
-} 
-
-/*
-	Responsável por montar a expressão e o corpo da função
-    Exemplo:   (expressão) { corpo da expressão}
-*/
-void estruturaFuncaoBase() :
-{}
-{
-	< ABRE_PARENTESE >	expressao()	< FECHA_PARENTESE >
-	
-	corpoFuncaoBase()
-}
-
-/*
-	Responsável por montar a estrutura base do condicional IF
-*/
-void estruturaIF() :
-{}
-{
-  	< SE >	estruturaFuncaoBase()
-		
-   	(< SENAO > corpoFuncaoBase())?
-   
-    < FIM_SE >    
-}
-
-void estruturaInput() :
-{}
-{
-	< INPUT > saidaMensagem()  
-}
-
-
-/*
-    GLC do comando aqui estamos definindo quais os tokens que definem um comando,
-	Exemplo: print("Texto exibido"); --> é um comando.
-*/
-void comando() :
-{}
-{
-  ( (declaraVariaveis())
-  | (estruturaInput()) /* MONTANDO A "EBNF" DO COMANDO INPUT */
-  | (< IMPRIMIR > saidaMensagem()) /* MONTANDO A "EBNF" DO COMANDO PRINT */
-  | ( estruturaIF() ) /* MONTANDO A "EBNF" DA ESTRUTURA DO IF */
-  | (< ENQUANTO > estruturaFuncaoBase())
-  | (< PARAR >)
-  )  < PT_VIRG >
-}
-
-
-
-JAVACODE void S()
-{
-  Token t;
-  do
-  {
-    t = getNextToken();
-    System.out.println(tokenImage [ t.kind ] + "\t" + t.image);
-  }
-  while (t.kind != EOF);
 }
