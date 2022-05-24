@@ -14,13 +14,13 @@ public class Comp
 {
   public static void main(String args []) throws ParseException
   {
-    int cont = 1;
-    while (cont <= 6)
+    int cont = 2;
+    while (cont <= 2)
     {
       System.out.println("\n\n\nIniciando leitura....");
       try
       {
-        Comp x = new Comp(new FileInputStream("assets\\3-3 exemplo" + cont + ".txt"));
+        Comp x = new Comp(new FileInputStream("assets/3-3 exemplo" + cont + ".txt"));
         System.out.println("Leitura feita....");
         System.out.println("\n\t\tIniciando analisador do exemplo " + cont + "....\n");
         System.out.println();
@@ -92,16 +92,11 @@ TOKEN : /* TIPOS DE DADOS */
 {
   < STRING :
     ("'")
-    (
-      ([ "A"-"Z", "a"-"z", "0"-"9", 
-      " ", "+", "-", "*", "/", ".", 
-      ",", "=", "!", ":", ";", "%", 
-      "(", ")", "\u00e0"-"\u00fa", "\u00c0"-"\u00da", 
-      "@", "$", "#", ">", "<", "?", 
-      "[", "]", "{", "}", "|", "\\" ])*
-    )
+    (~["\"","\n","\r"])*
     ("'") >
 | < NUMBER : ([ "0"-"9" ])+ (".")? ([ "0"-"9" ])* >
+
+	
 }
 
 TOKEN : /* OPERADORES RELACIONAIS */
@@ -176,7 +171,7 @@ void inicio() :
 
 /*
     GLC do comando aqui estamos definindo quais os tokens que definem um comando,
-	Exemplo: print("Texto exibido"); --> é um comando.
+	Exemplo: print("Texto exibido"); --> ï¿½ um comando.
 */
 void comando() :
 {}
@@ -191,7 +186,7 @@ void comando() :
 }
 
 /*
-	GLC da declaração de variaveis aqui estamos definindo como vamos declarar uma variavel ou definir um valor para ela. 
+	GLC da declaraï¿½ï¿½o de variaveis aqui estamos definindo como vamos declarar uma variavel ou definir um valor para ela. 
 */
 void declaraVariaveis() :
 {}
@@ -200,7 +195,7 @@ void declaraVariaveis() :
   variavel()
 }
   
-/* GLC das variaveis aqui estamos definindo como são identificadas as variaveis */
+/* GLC das variaveis aqui estamos definindo como sï¿½o identificadas as variaveis */
 void variavel() :
 {}
 {
@@ -213,7 +208,7 @@ void estruturaInput() :
 	< INPUT > saidaMensagem()  
 }
 
-//Estrutura base para saída de mensagem
+//Estrutura base para saï¿½da de mensagem
 // ARUMAR O PROBLEMA DO CONCATENADOR
 void saidaMensagem() :
 { }
@@ -233,7 +228,7 @@ void saidaMensagemExtOpt() :
 }
 
 /*
-	Responsável por montar a estrutura base do condicional IF
+	Responsï¿½vel por montar a estrutura base do condicional IF
 */
 void estruturaIF() :
 {}
@@ -246,8 +241,8 @@ void estruturaIF() :
 }
 
 /*
-	Responsável por montar a expressão e o corpo da função
-    Exemplo:   (expressão) { corpo da expressão}
+	Responsï¿½vel por montar a expressï¿½o e o corpo da funï¿½ï¿½o
+    Exemplo:   (expressï¿½o) { corpo da expressï¿½o}
 */
 void estruturaFuncaoBase() :
 {}
@@ -259,7 +254,7 @@ void estruturaFuncaoBase() :
 
 
 /*
- 	Responsável por montar o corpo da função, contendo o começo e o fim das chaves
+ 	Responsï¿½vel por montar o corpo da funï¿½ï¿½o, contendo o comeï¿½o e o fim das chaves
   	Exemplo: { comandos }
 */
 void corpoCodigoBase() :

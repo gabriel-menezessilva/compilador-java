@@ -1,4 +1,8 @@
 print('15 * 5 - 3.14 = '# 15.0 * 5.0 - 3.14);
 /*deve imprimir: "15*5-3.14=71.86"*/
 
+print('é o cão - chupando manga!');
+
+print('R$ 5.00 o picolé');
+
 /* */
