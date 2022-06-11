@@ -10,13 +10,13 @@ public class Symbol {
 
 	private static int marcador = 1; // armazena a última referência incluída na tabela
 
-	public Symbol(String _nome, char _tipo) {
+	public Symbol(String nome, char tipo) {
 
-		this.nome = _nome;
+		this.nome = nome;
 
-		this.tipo = _tipo;
+		this.tipo = tipo;
 
-		this.referencia = setMarcador(_tipo);
+		this.referencia = setReferencia(tipo);
 
 	}
 
@@ -40,17 +40,13 @@ public class Symbol {
 		return referencia;
 	}
 
-	public void setReferencia(int referencia) {
-		this.referencia = referencia;
-	}
-
-	private static int setMarcador(char _tipo) {
+	private static int setReferencia(char tipo) {
 
 		int _marcadorAnterior = Symbol.marcador;
 
-		if (_tipo == 'N') {
+		if (tipo == 'N') {
 			Symbol.marcador += 2;
-		} else if (_tipo == 'S') {
+		} else if (tipo == 'S') {
 			Symbol.marcador += 1;
 		}
 

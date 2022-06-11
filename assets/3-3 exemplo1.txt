@@ -1,14 +1,2 @@
 number @idade;
-
-
-@idade = 5.5;
-@Nota1 = input();
-@Nota2 = input();
-@Nota3 = input();
-
-if(@idade == 2){
-	print('ok');
-} else {
-	print('não esta ok');
-}
-endif;
+string @nome;

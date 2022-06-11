@@ -9,13 +9,17 @@ options
 PARSER_BEGIN(Comp)
 package Principal;
 import java.io.*;
+import Resources.*;
+import java.util.HashMap;
 
 public class Comp
 {
+  static Table tab = new Table();
+
   public static void main(String args []) throws ParseException
   {
-    int cont = 2;
-    while (cont <= 2)
+    int cont = 1;
+    while (cont == 1)
     {
       System.out.println("\n\n\nIniciando leitura....");
       try
@@ -25,6 +29,7 @@ public class Comp
         System.out.println("\n\t\tIniciando analisador do exemplo " + cont + "....\n");
         System.out.println();
         x.inicio();
+        System.out.println(tab);
         cont++;
       }
       catch (FileNotFoundException e)
@@ -90,13 +95,11 @@ TOKEN : /* ATRIBUICAO */
 
 TOKEN : /* TIPOS DE DADOS */
 {
-  < STRING :
-    ("'")
-    (~["\"","\n","\r"])*
+  < STRING : 
+    ("'") 
+    (~[ "\"", "\n", "\r" ])* 
     ("'") >
 | < NUMBER : ([ "0"-"9" ])+ (".")? ([ "0"-"9" ])* >
-
-	
 }
 
 TOKEN : /* OPERADORES RELACIONAIS */
@@ -168,7 +171,6 @@ void inicio() :
   < EOF >
 }
 
-
 /*
     GLC do comando aqui estamos definindo quais os tokens que definem um comando,
 	Exemplo: print("Texto exibido"); --> � um comando.
@@ -176,55 +178,143 @@ void inicio() :
 void comando() :
 {}
 {
-  ( (declaraVariaveis())
-  | (estruturaInput()) /* MONTANDO A "EBNF" DO COMANDO INPUT */
-  | (< IMPRIMIR > saidaMensagem()) /* MONTANDO A "EBNF" DO COMANDO PRINT */
-  | ( estruturaIF() ) /* MONTANDO A "EBNF" DA ESTRUTURA DO IF */
-  | (< ENQUANTO > estruturaFuncaoBase())
+  (
+    (
+      declaraVariaveis()
+    )
+  |
+    (
+      estruturaInput()
+    ) /* MONTANDO A "EBNF" DO COMANDO INPUT */
+  |
+    (
+      < IMPRIMIR > saidaMensagem()
+    ) /* MONTANDO A "EBNF" DO COMANDO PRINT */
+  |
+    (
+      estruturaIF()
+    ) /* MONTANDO A "EBNF" DA ESTRUTURA DO IF */
+  |
+    (
+      < ENQUANTO > estruturaFuncaoBase()
+    )
   | (< PARAR >)
-  )  < PT_VIRG >
+  )
+  < PT_VIRG >
 }
 
 /*
 	GLC da declara��o de variaveis aqui estamos definindo como vamos declarar uma variavel ou definir um valor para ela. 
 */
 void declaraVariaveis() :
-{}
 {
-  (< NUMBER_TYPE > | < STRING_TYPE >)?
-  variavel()
+  Symbol simb;
+  Token t;
+  char tp;
 }
-  
+{
+  (
+    < NUMBER_TYPE >
+    {
+      tp = 'N';
+    }
+  | < STRING_TYPE >
+    {
+      tp = 'S';
+    }
+  )
+  (
+    t = < IDENTIFICADOR >
+    {
+      simb = new Symbol(t.image, tp);
+      tab.inclui(simb);
+    }
+    (
+      < VIRGULA > t = < IDENTIFICADOR >
+      {
+        simb = new Symbol(t.image, tp);
+        tab.inclui(simb);
+      }
+    )*
+    (
+      < ATRIBUICAO >
+      (
+        (
+          expressao()
+        | < STRING >
+        | estruturaInput()
+        )
+        (< CONCAT >)?
+      )+
+    )?
+  )
+}
+
 /* GLC das variaveis aqui estamos definindo como s�o identificadas as variaveis */
-void variavel() :
-{}
+/*void variavel() :
 {
-  (< IDENTIFICADOR > (< VIRGULA > < IDENTIFICADOR >)* (< ATRIBUICAO > ((expressao() | < STRING > | estruturaInput()) (< CONCAT >)?)+)? )
+  Symbol simb;
+  Token t;
 }
+{
+  (
+    t = < IDENTIFICADOR >
+    {
+      simb = new Symbol();
+      simb.setNome(t.image);
+      tab.inclui(simb.nome, simb);
+    }
+    (
+      < VIRGULA > t = < IDENTIFICADOR >
+      {
+        simb = new Simbolo();
+        simb.setNome(t.image);
+        tab.inclui(simb.getNome(), simb);
+      }
+    )*
+    (
+      < ATRIBUICAO >
+      (
+        (
+          expressao()
+        | < STRING >
+        | estruturaInput()
+        )
+        (< CONCAT >)?
+      )+
+    )?
+  )
+}*/
 
 void estruturaInput() :
 {}
 {
-	< INPUT > saidaMensagem()  
+  < INPUT > saidaMensagem()
 }
 
 //Estrutura base para sa�da de mensagem
 // ARUMAR O PROBLEMA DO CONCATENADOR
 void saidaMensagem() :
-{ }
+{}
 {
-	< ABRE_PARENTESE >
-
-	(< STRING > saidaMensagemExtOpt() | < IDENTIFICADOR > saidaMensagemExtOpt())*
-	
-    < FECHA_PARENTESE >    
+  < ABRE_PARENTESE >
+  (
+    < STRING > saidaMensagemExtOpt()
+  | < IDENTIFICADOR > saidaMensagemExtOpt()
+  )*
+  < FECHA_PARENTESE >
 }
-
 
 void saidaMensagemExtOpt() :
 {}
 {
-  (< CONCAT >  (expressao() | < STRING >))*
+  (
+    < CONCAT >
+    (
+      expressao()
+    | < STRING >
+    )
+  )*
 }
 
 /*
@@ -233,11 +323,11 @@ void saidaMensagemExtOpt() :
 void estruturaIF() :
 {}
 {
-  	< SE >	estruturaFuncaoBase()
-		
-   	(< SENAO > corpoCodigoBase())?
-   
-    < FIM_SE >    
+  < SE > 	estruturaFuncaoBase()
+  (
+    < SENAO > corpoCodigoBase()
+  )?
+  < FIM_SE >
 }
 
 /*
@@ -247,39 +337,49 @@ void estruturaIF() :
 void estruturaFuncaoBase() :
 {}
 {
-	< ABRE_PARENTESE >	expressao()	< FECHA_PARENTESE >
-	
-	corpoCodigoBase()
+  < ABRE_PARENTESE > 	expressao() 	< FECHA_PARENTESE > 
+  corpoCodigoBase()
 }
-
 
 /*
  	Respons�vel por montar o corpo da fun��o, contendo o come�o e o fim das chaves
   	Exemplo: { comandos }
 */
 void corpoCodigoBase() :
-{ }
+{}
 {
-  < ABRE_CHAVES > (comando())* < FECHA_CHAVES >  
-} 
+  < ABRE_CHAVES >
+  (
+    comando()
+  )*
+  < FECHA_CHAVES >
+}
 
 void expressao() :
 {}
 {
-  termo1() ( < OU > termo1() )*
+  termo1()
+  (
+    < OU > termo1()
+  )*
 }
 
 void termo1() :
 {}
 {
-  termo2() ( < AND > termo2() )*
+  termo2()
+  (
+    < AND > termo2()
+  )*
 }
 
 void termo2() :
 {}
 {
   termo3()
-  (    ( < MAIOR_QUE >
+  (
+    (
+      < MAIOR_QUE >
     | < MENOR_QUE >
     | < EQUIVALENTE >
     | < DIFERENTE >
@@ -287,42 +387,56 @@ void termo2() :
     | < MENOR_IGUAL >
     )
     termo3()
-  )*  
+  )*
 }
 
 void termo3() :
 {}
 {
-  (< SUBTRACAO >)?  termo4()
-  ((< ADICAO > | < SUBTRACAO >)+ termo4())*
-  
+  (< SUBTRACAO >)? termo4()
+  (
+    (
+      < ADICAO >
+    | < SUBTRACAO >
+    )+
+    termo4()
+  )*
 }
 
 void termo4() :
 {}
 {
   termo5()
-    ((< MULTIPLICACAO > | < DIVISAO >) termo5())*
+  (
+    (
+      < MULTIPLICACAO >
+    | < DIVISAO >
+    )
+    termo5()
+  )*
 }
 
 void termo5() :
 {}
 {
   termo6()
-   (
-     < POTENCIA > termo6()
-   )*
+  (
+    < POTENCIA > termo6()
+  )*
 }
 
 void termo6() :
 {}
 {
-  ((< NEGACAO >)*  termo7())  
-   
+  (
+    (< NEGACAO >)* termo7()
+  )
 }
 
 void termo7() :
 {}
 {
-	< NUMBER > | < IDENTIFICADOR > | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >
+  < NUMBER >
+| < IDENTIFICADOR >
+| < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >
 }
