@@ -12,19 +12,17 @@ public class Table {
 
 	}
 
-	public boolean inclui(Symbol _simb) {
+	public boolean inclui(Symbol _simb) throws CompilerException {
 
-		if (this.tab.containsKey(_simb.getNome()))
+		if (this.tab.containsKey(_simb.getNome())) {
 
-			return false;
-
-		else {
-
-			this.tab.put(_simb.getNome(), _simb);
-
-			return true;
+			throw new CompilerException("A variavel " + _simb.getNome() + " já foi declarada!");
 
 		}
+
+		this.tab.put(_simb.getNome(), _simb);
+
+		return true;
 
 	}
 
@@ -34,10 +32,11 @@ public class Table {
 
 	}
 
-	public boolean isExiste(String _chave) {
+	public void isExiste(String _chave) throws CompilerException {
 
-		return this.tab.containsKey(_chave);
-
+		if(!this.tab.containsKey(_chave)) {
+			throw new CompilerException("A variavel " + _chave +" não foi declarada!");
+		}
 	}
 
 	public String toString() {

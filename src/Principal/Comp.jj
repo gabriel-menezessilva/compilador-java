@@ -1,7 +1,7 @@
 options
 {
   static = false;
-  DEBUG_PARSER = true;
+  //DEBUG_PARSER = true;
   //DEBUG_TOKEN_MANAGER = true;
   DEBUG = true;
 }
@@ -227,13 +227,29 @@ void declaraVariaveis() :
     t = < IDENTIFICADOR >
     {
       simb = new Symbol(t.image, tp);
-      tab.inclui(simb);
+      try
+      {
+        tab.inclui(simb);
+      }
+      catch (CompilerException e)
+      {
+        System.out.println(e.getMessage());
+        e.printStackTrace();;
+      }
     }
     (
       < VIRGULA > t = < IDENTIFICADOR >
       {
         simb = new Symbol(t.image, tp);
-        tab.inclui(simb);
+        try
+        {
+          tab.inclui(simb);
+        }
+        catch (CompilerException e)
+        {
+          System.out.println(e.getMessage());
+          e.printStackTrace();
+        }
       }
     )*
     (
@@ -249,42 +265,6 @@ void declaraVariaveis() :
     )?
   )
 }
-
-/* GLC das variaveis aqui estamos definindo como s�o identificadas as variaveis */
-/*void variavel() :
-{
-  Symbol simb;
-  Token t;
-}
-{
-  (
-    t = < IDENTIFICADOR >
-    {
-      simb = new Symbol();
-      simb.setNome(t.image);
-      tab.inclui(simb.nome, simb);
-    }
-    (
-      < VIRGULA > t = < IDENTIFICADOR >
-      {
-        simb = new Simbolo();
-        simb.setNome(t.image);
-        tab.inclui(simb.getNome(), simb);
-      }
-    )*
-    (
-      < ATRIBUICAO >
-      (
-        (
-          expressao()
-        | < STRING >
-        | estruturaInput()
-        )
-        (< CONCAT >)?
-      )+
-    )?
-  )
-}*/
 
 void estruturaInput() :
 {}
@@ -295,12 +275,26 @@ void estruturaInput() :
 //Estrutura base para sa�da de mensagem
 // ARUMAR O PROBLEMA DO CONCATENADOR
 void saidaMensagem() :
-{}
+{
+  Token t;
+}
 {
   < ABRE_PARENTESE >
   (
     < STRING > saidaMensagemExtOpt()
-  | < IDENTIFICADOR > saidaMensagemExtOpt()
+  | t = < IDENTIFICADOR >
+    {
+      try
+      {
+        tab.isExiste(t.image);
+      }
+      catch (CompilerException e)
+      {
+        System.out.println(e.getMessage());
+        e.printStackTrace();
+      }
+    }
+    saidaMensagemExtOpt()
   )*
   < FECHA_PARENTESE >
 }
@@ -434,9 +428,23 @@ void termo6() :
 }
 
 void termo7() :
-{}
+{
+  Symbol simb;
+  Token t;
+}
 {
   < NUMBER >
-| < IDENTIFICADOR >
+| t = < IDENTIFICADOR >
+  {
+    try
+    {
+      tab.isExiste(t.image);
+    }
+    catch (CompilerException e)
+    {
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+    }
+  }
 | < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >
 }
