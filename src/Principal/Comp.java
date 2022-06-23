@@ -133,8 +133,8 @@ public class Comp implements CompConstants {
       {
         System.out.println(e.getMessage());
         e.printStackTrace();
-        ;
       }
+      storage.Incluir(new Item('V', t.image));
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -157,7 +157,9 @@ public class Comp implements CompConstants {
           System.out.println(e.getMessage());
           e.printStackTrace();
         }
+        storage.Incluir(new Item('V', t.image));
     }
+      System.out.println(storage.toString());
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ATRIBUICAO:
       jj_consume_token(ATRIBUICAO);
@@ -170,7 +172,7 @@ public class Comp implements CompConstants {
         case NEGACAO:
         case SUBTRACAO:
         case ABRE_PARENTESE:
-          expressao(storage);
+          expressao();
           break;
         case INPUT:
           estruturaInput();
@@ -259,7 +261,6 @@ public class Comp implements CompConstants {
   }
 
   final public void saidaMensagemExtOpt() throws ParseException {
-  Storage storage = new Storage();
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -271,7 +272,7 @@ public class Comp implements CompConstants {
         break label_5;
       }
       jj_consume_token(CONCAT);
-      expressao(storage);
+      expressao();
     }
   }
 
@@ -298,9 +299,8 @@ public class Comp implements CompConstants {
     Exemplo:   (express�o) { corpo da express�o}
 */
   final public void estruturaFuncaoBase() throws ParseException {
-  Storage storage = new Storage();
     jj_consume_token(ABRE_PARENTESE);
-    expressao(storage);
+    expressao();
     jj_consume_token(FECHA_PARENTESE);
     corpoCodigoBase();
   }
@@ -332,8 +332,9 @@ public class Comp implements CompConstants {
     jj_consume_token(FECHA_CHAVES);
   }
 
-  final public void expressao(Storage storage) throws ParseException {
+  final public void expressao() throws ParseException {
   Token t;
+  Storage storage = new Storage();
     termo1(storage);
     label_7:
     while (true) {
@@ -347,8 +348,10 @@ public class Comp implements CompConstants {
       }
       t = jj_consume_token(OU);
       storage.Incluir(new Item('O', t.image));
+      System.out.println(storage.toString());
       termo1(storage);
     }
+    System.out.println(storage.toString());
   }
 
   final public void termo1(Storage storage) throws ParseException {
@@ -534,11 +537,10 @@ public class Comp implements CompConstants {
         storage.Incluir(new Item('O', t.image));
         System.out.println(storage.toString());
     }
-    termo7();
+    termo7(storage);
   }
 
-  final public void termo7() throws ParseException {
-  Storage storage = new Storage();
+  final public void termo7(Storage storage) throws ParseException {
   Symbol simb;
   Token t;
   char tipo;
@@ -567,7 +569,7 @@ public class Comp implements CompConstants {
       break;
     case ABRE_PARENTESE:
       jj_consume_token(ABRE_PARENTESE);
-      expressao(storage);
+      expressao();
       jj_consume_token(FECHA_PARENTESE);
       break;
     default:

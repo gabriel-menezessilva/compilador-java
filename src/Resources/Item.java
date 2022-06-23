@@ -26,7 +26,7 @@ public class Item {
 	}
 	
 	public String toString() {
-		return "Tipo: " + this.tipo + " Valor: " + this.valor + " ";
+		return " [ " + this.tipo + " | " + this.valor + " ]";
 	}
 
 }

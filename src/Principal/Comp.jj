@@ -236,8 +236,8 @@ void declaraVariaveis() :
       {
         System.out.println(e.getMessage());
         e.printStackTrace();
-        ;
       }
+      storage.Incluir(new Item('V', t.image));
     }
     (
       < VIRGULA > t = < IDENTIFICADOR >
@@ -252,13 +252,17 @@ void declaraVariaveis() :
           System.out.println(e.getMessage());
           e.printStackTrace();
         }
+        storage.Incluir(new Item('V', t.image));
       }
     )*
+    {
+      System.out.println(storage.toString());
+    }
     (
       < ATRIBUICAO >
       (
         (
-          expressao(storage)
+          expressao()
         | estruturaInput()
         )
         (< CONCAT >)?
@@ -302,13 +306,12 @@ void saidaMensagem() :
 
 void saidaMensagemExtOpt() :
 {
-  Storage storage = new Storage();
 }
 {
   (
     < CONCAT >
     (
-      expressao(storage)
+      expressao()
     )
   )*
 }
@@ -332,10 +335,9 @@ void estruturaIF() :
 */
 void estruturaFuncaoBase() :
 {
-  Storage storage = new Storage();
 }
 {
-  < ABRE_PARENTESE > 	expressao(storage) 	< FECHA_PARENTESE > 
+  < ABRE_PARENTESE > 	expressao() 	< FECHA_PARENTESE > 
   corpoCodigoBase()
 }
 
@@ -353,9 +355,10 @@ void corpoCodigoBase() :
   < FECHA_CHAVES >
 }
 
-void expressao(Storage storage) :
+void expressao() :
 {
   Token t;
+  Storage storage = new Storage();
 }
 {
   termo1(storage)
@@ -363,9 +366,13 @@ void expressao(Storage storage) :
     t = < OU >
     {
       storage.Incluir(new Item('O', t.image));
+      System.out.println(storage.toString());
     }
     termo1(storage)
   )*
+  {
+    System.out.println(storage.toString());
+  }
 }
 
 void termo1(Storage storage) :
@@ -470,13 +477,12 @@ void termo6(Storage storage) :
         System.out.println(storage.toString());
       }
     )*
-    termo7()
+    termo7(storage)
   )
 }
 
-void termo7() :
+void termo7(Storage storage) :
 {
-  Storage storage = new Storage();
   Symbol simb;
   Token t;
   char tipo;
@@ -506,5 +512,5 @@ void termo7() :
     }
     storage.Incluir(new Item(tipo, t.image));
   }
-| < ABRE_PARENTESE > expressao(storage) < FECHA_PARENTESE >
+| < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >
 }

@@ -1,1 +1,6 @@
-number @nome = (10 + 10) * 20; 
+number @idade = 22.0;
+string @nome = 'Renan';
+
+if(@idade > 18.0){
+	print('Liberado');
+}endif;
