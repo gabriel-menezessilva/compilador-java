@@ -105,6 +105,7 @@ public class Comp implements CompConstants {
 	GLC da declara��o de variaveis aqui estamos definindo como vamos declarar uma variavel ou definir um valor para ela. 
 */
   final public void declaraVariaveis() throws ParseException {
+  Storage storage = new Storage();
   Symbol simb;
   Token t;
   char tp;
@@ -131,7 +132,8 @@ public class Comp implements CompConstants {
       catch (CompilerException e)
       {
         System.out.println(e.getMessage());
-        e.printStackTrace();;
+        e.printStackTrace();
+        ;
       }
     label_2:
     while (true) {
@@ -163,14 +165,12 @@ public class Comp implements CompConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFICADOR:
+        case STRING:
         case NUMBER:
         case NEGACAO:
         case SUBTRACAO:
         case ABRE_PARENTESE:
-          expressao();
-          break;
-        case STRING:
-          jj_consume_token(STRING);
+          expressao(storage);
           break;
         case INPUT:
           estruturaInput();
@@ -259,6 +259,7 @@ public class Comp implements CompConstants {
   }
 
   final public void saidaMensagemExtOpt() throws ParseException {
+  Storage storage = new Storage();
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -270,22 +271,7 @@ public class Comp implements CompConstants {
         break label_5;
       }
       jj_consume_token(CONCAT);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case IDENTIFICADOR:
-      case NUMBER:
-      case NEGACAO:
-      case SUBTRACAO:
-      case ABRE_PARENTESE:
-        expressao();
-        break;
-      case STRING:
-        jj_consume_token(STRING);
-        break;
-      default:
-        jj_la1[11] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+      expressao(storage);
     }
   }
 
@@ -301,7 +287,7 @@ public class Comp implements CompConstants {
       corpoCodigoBase();
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[11] = jj_gen;
       ;
     }
     jj_consume_token(FIM_SE);
@@ -312,8 +298,9 @@ public class Comp implements CompConstants {
     Exemplo:   (express�o) { corpo da express�o}
 */
   final public void estruturaFuncaoBase() throws ParseException {
+  Storage storage = new Storage();
     jj_consume_token(ABRE_PARENTESE);
-    expressao();
+    expressao(storage);
     jj_consume_token(FECHA_PARENTESE);
     corpoCodigoBase();
   }
@@ -337,7 +324,7 @@ public class Comp implements CompConstants {
         ;
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[12] = jj_gen;
         break label_6;
       }
       comando();
@@ -345,8 +332,9 @@ public class Comp implements CompConstants {
     jj_consume_token(FECHA_CHAVES);
   }
 
-  final public void expressao() throws ParseException {
-    termo1();
+  final public void expressao(Storage storage) throws ParseException {
+  Token t;
+    termo1(storage);
     label_7:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -354,16 +342,18 @@ public class Comp implements CompConstants {
         ;
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[13] = jj_gen;
         break label_7;
       }
-      jj_consume_token(OU);
-      termo1();
+      t = jj_consume_token(OU);
+      storage.Incluir(new Item('O', t.image));
+      termo1(storage);
     }
   }
 
-  final public void termo1() throws ParseException {
-    termo2();
+  final public void termo1(Storage storage) throws ParseException {
+  Token t;
+    termo2(storage);
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -371,16 +361,18 @@ public class Comp implements CompConstants {
         ;
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[14] = jj_gen;
         break label_8;
       }
-      jj_consume_token(AND);
-      termo2();
+      t = jj_consume_token(AND);
+      storage.Incluir(new Item('O', t.image));
+      termo2(storage);
     }
   }
 
-  final public void termo2() throws ParseException {
-    termo3();
+  final public void termo2(Storage storage) throws ParseException {
+  Token t;
+    termo3(storage);
     label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -393,47 +385,49 @@ public class Comp implements CompConstants {
         ;
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[15] = jj_gen;
         break label_9;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MAIOR_QUE:
-        jj_consume_token(MAIOR_QUE);
+        t = jj_consume_token(MAIOR_QUE);
         break;
       case MENOR_QUE:
-        jj_consume_token(MENOR_QUE);
+        t = jj_consume_token(MENOR_QUE);
         break;
       case EQUIVALENTE:
-        jj_consume_token(EQUIVALENTE);
+        t = jj_consume_token(EQUIVALENTE);
         break;
       case DIFERENTE:
-        jj_consume_token(DIFERENTE);
+        t = jj_consume_token(DIFERENTE);
         break;
       case MAIOR_IGUAL:
-        jj_consume_token(MAIOR_IGUAL);
+        t = jj_consume_token(MAIOR_IGUAL);
         break;
       case MENOR_IGUAL:
-        jj_consume_token(MENOR_IGUAL);
+        t = jj_consume_token(MENOR_IGUAL);
         break;
       default:
-        jj_la1[17] = jj_gen;
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      termo3();
+      storage.Incluir(new Item('O', t.image));
+      termo3(storage);
     }
   }
 
-  final public void termo3() throws ParseException {
+  final public void termo3(Storage storage) throws ParseException {
+  Token t;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SUBTRACAO:
-      jj_consume_token(SUBTRACAO);
+      t = jj_consume_token(SUBTRACAO);
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[17] = jj_gen;
       ;
     }
-    termo4();
+    termo4(storage);
     label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -442,20 +436,21 @@ public class Comp implements CompConstants {
         ;
         break;
       default:
-        jj_la1[19] = jj_gen;
+        jj_la1[18] = jj_gen;
         break label_10;
       }
       label_11:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ADICAO:
-          jj_consume_token(ADICAO);
+          t = jj_consume_token(ADICAO);
           break;
         case SUBTRACAO:
-          jj_consume_token(SUBTRACAO);
+          t = jj_consume_token(SUBTRACAO);
+        storage.Incluir(new Item('O', t.image));
           break;
         default:
-          jj_la1[20] = jj_gen;
+          jj_la1[19] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -465,16 +460,17 @@ public class Comp implements CompConstants {
           ;
           break;
         default:
-          jj_la1[21] = jj_gen;
+          jj_la1[20] = jj_gen;
           break label_11;
         }
       }
-      termo4();
+      termo4(storage);
     }
   }
 
-  final public void termo4() throws ParseException {
-    termo5();
+  final public void termo4(Storage storage) throws ParseException {
+  Token t;
+    termo5(storage);
     label_12:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -483,27 +479,29 @@ public class Comp implements CompConstants {
         ;
         break;
       default:
-        jj_la1[22] = jj_gen;
+        jj_la1[21] = jj_gen;
         break label_12;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULTIPLICACAO:
-        jj_consume_token(MULTIPLICACAO);
+        t = jj_consume_token(MULTIPLICACAO);
         break;
       case DIVISAO:
-        jj_consume_token(DIVISAO);
+        t = jj_consume_token(DIVISAO);
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[22] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      termo5();
+      storage.Incluir(new Item('O', t.image));
+      termo5(storage);
     }
   }
 
-  final public void termo5() throws ParseException {
-    termo6();
+  final public void termo5(Storage storage) throws ParseException {
+  Token t;
+    termo6(storage);
     label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -511,15 +509,17 @@ public class Comp implements CompConstants {
         ;
         break;
       default:
-        jj_la1[24] = jj_gen;
+        jj_la1[23] = jj_gen;
         break label_13;
       }
-      jj_consume_token(POTENCIA);
-      termo6();
+      t = jj_consume_token(POTENCIA);
+      storage.Incluir(new Item('O', t.image));
+      termo6(storage);
     }
   }
 
-  final public void termo6() throws ParseException {
+  final public void termo6(Storage storage) throws ParseException {
+  Token t;
     label_14:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -527,23 +527,33 @@ public class Comp implements CompConstants {
         ;
         break;
       default:
-        jj_la1[25] = jj_gen;
+        jj_la1[24] = jj_gen;
         break label_14;
       }
-      jj_consume_token(NEGACAO);
+      t = jj_consume_token(NEGACAO);
+        storage.Incluir(new Item('O', t.image));
+        System.out.println(storage.toString());
     }
     termo7();
   }
 
   final public void termo7() throws ParseException {
+  Storage storage = new Storage();
   Symbol simb;
   Token t;
+  char tipo;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NUMBER:
-      jj_consume_token(NUMBER);
+      t = jj_consume_token(NUMBER);
+    tipo = 'N';
+      break;
+    case STRING:
+      t = jj_consume_token(STRING);
+    tipo = 'S';
       break;
     case IDENTIFICADOR:
       t = jj_consume_token(IDENTIFICADOR);
+    tipo = 'V';
     try
     {
       tab.isExiste(t.image);
@@ -553,14 +563,15 @@ public class Comp implements CompConstants {
       System.out.println(e.getMessage());
       e.printStackTrace();
     }
+    storage.Incluir(new Item(tipo, t.image));
       break;
     case ABRE_PARENTESE:
       jj_consume_token(ABRE_PARENTESE);
-      expressao();
+      expressao(storage);
       jj_consume_token(FECHA_PARENTESE);
       break;
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -575,7 +586,7 @@ public class Comp implements CompConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[27];
+  final private int[] jj_la1 = new int[26];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -583,10 +594,10 @@ public class Comp implements CompConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x80000000,0x10440680,0x0,0x10440680,0x100,0x280,0x280,0x0,0x10440680,0x0,0x0,0x100000,0x80000,0x1f800,0x1f800,0x400000,0x600000,0x600000,0x600000,0x1800000,0x1800000,0x2000000,0x40000,0x10000480,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x80000000,0x10440680,0x0,0x10440680,0x100,0x280,0x280,0x0,0x0,0x0,0x100000,0x80000,0x1f800,0x1f800,0x400000,0x600000,0x600000,0x600000,0x1800000,0x1800000,0x2000000,0x40000,0x10000680,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0xd9c,0xd9c,0xc00,0x0,0x4,0x2,0x4,0x0,0x0,0x0,0x2,0x0,0x40,0xd9c,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0xd9c,0xd9c,0xc00,0x0,0x4,0x2,0x4,0x0,0x0,0x0,0x2,0x40,0xd9c,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -600,7 +611,7 @@ public class Comp implements CompConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -614,7 +625,7 @@ public class Comp implements CompConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -624,7 +635,7 @@ public class Comp implements CompConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -634,7 +645,7 @@ public class Comp implements CompConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -643,7 +654,7 @@ public class Comp implements CompConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -652,7 +663,7 @@ public class Comp implements CompConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -708,7 +719,7 @@ public class Comp implements CompConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 27; i++) {
+    for (int i = 0; i < 26; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

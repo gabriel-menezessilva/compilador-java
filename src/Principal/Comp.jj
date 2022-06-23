@@ -208,6 +208,7 @@ void comando() :
 */
 void declaraVariaveis() :
 {
+  Storage storage = new Storage();
   Symbol simb;
   Token t;
   char tp;
@@ -234,7 +235,8 @@ void declaraVariaveis() :
       catch (CompilerException e)
       {
         System.out.println(e.getMessage());
-        e.printStackTrace();;
+        e.printStackTrace();
+        ;
       }
     }
     (
@@ -256,8 +258,7 @@ void declaraVariaveis() :
       < ATRIBUICAO >
       (
         (
-          expressao()
-        | < STRING >
+          expressao(storage)
         | estruturaInput()
         )
         (< CONCAT >)?
@@ -300,13 +301,14 @@ void saidaMensagem() :
 }
 
 void saidaMensagemExtOpt() :
-{}
+{
+  Storage storage = new Storage();
+}
 {
   (
     < CONCAT >
     (
-      expressao()
-    | < STRING >
+      expressao(storage)
     )
   )*
 }
@@ -329,9 +331,11 @@ void estruturaIF() :
     Exemplo:   (express�o) { corpo da express�o}
 */
 void estruturaFuncaoBase() :
-{}
 {
-  < ABRE_PARENTESE > 	expressao() 	< FECHA_PARENTESE > 
+  Storage storage = new Storage();
+}
+{
+  < ABRE_PARENTESE > 	expressao(storage) 	< FECHA_PARENTESE > 
   corpoCodigoBase()
 }
 
@@ -349,92 +353,147 @@ void corpoCodigoBase() :
   < FECHA_CHAVES >
 }
 
-void expressao() :
-{}
+void expressao(Storage storage) :
 {
-  termo1()
+  Token t;
+}
+{
+  termo1(storage)
   (
-    < OU > termo1()
+    t = < OU >
+    {
+      storage.Incluir(new Item('O', t.image));
+    }
+    termo1(storage)
   )*
 }
 
-void termo1() :
-{}
+void termo1(Storage storage) :
 {
-  termo2()
+  Token t;
+}
+{
+  termo2(storage)
   (
-    < AND > termo2()
+    t = < AND >
+    {
+      storage.Incluir(new Item('O', t.image));
+    }
+    termo2(storage)
   )*
 }
 
-void termo2() :
-{}
+void termo2(Storage storage) :
 {
-  termo3()
+  Token t;
+}
+{
+  termo3(storage)
   (
     (
-      < MAIOR_QUE >
-    | < MENOR_QUE >
-    | < EQUIVALENTE >
-    | < DIFERENTE >
-    | < MAIOR_IGUAL >
-    | < MENOR_IGUAL >
+      t = < MAIOR_QUE >
+    | t = < MENOR_QUE >
+    | t = < EQUIVALENTE >
+    | t = < DIFERENTE >
+    | t = < MAIOR_IGUAL >
+    | t = < MENOR_IGUAL >
     )
-    termo3()
+    {
+      storage.Incluir(new Item('O', t.image));
+    }
+    termo3(storage)
   )*
 }
 
-void termo3() :
-{}
+void termo3(Storage storage) :
 {
-  (< SUBTRACAO >)? termo4()
+  Token t;
+}
+{
+  (t = < SUBTRACAO >)? 
+  termo4(storage)
   (
     (
-      < ADICAO >
-    | < SUBTRACAO >
+      t = < ADICAO >
+    | t = < SUBTRACAO >
+      {
+        storage.Incluir(new Item('O', t.image));
+      }
     )+
-    termo4()
+    termo4(storage)
   )*
 }
 
-void termo4() :
-{}
+void termo4(Storage storage) :
 {
-  termo5()
+  Token t;
+}
+{
+  termo5(storage)
   (
     (
-      < MULTIPLICACAO >
-    | < DIVISAO >
+      t = < MULTIPLICACAO >
+    | t = < DIVISAO >
     )
-    termo5()
+    {
+      storage.Incluir(new Item('O', t.image));
+    }
+    termo5(storage)
   )*
 }
 
-void termo5() :
-{}
+void termo5(Storage storage) :
 {
-  termo6()
+  Token t;
+}
+{
+  termo6(storage)
   (
-    < POTENCIA > termo6()
+    t = < POTENCIA >
+    {
+      storage.Incluir(new Item('O', t.image));
+    }
+    termo6(storage)
   )*
 }
 
-void termo6() :
-{}
+void termo6(Storage storage) :
+{
+  Token t;
+}
 {
   (
-    (< NEGACAO >)* termo7()
+    (
+      t = < NEGACAO >
+      {
+        storage.Incluir(new Item('O', t.image));
+        System.out.println(storage.toString());
+      }
+    )*
+    termo7()
   )
 }
 
 void termo7() :
 {
+  Storage storage = new Storage();
   Symbol simb;
   Token t;
+  char tipo;
 }
 {
-  < NUMBER >
+  t = < NUMBER >
+  {
+    tipo = 'N';
+  }
+| t = < STRING >
+  {
+    tipo = 'S';
+  }
 | t = < IDENTIFICADOR >
+  {
+    tipo = 'V';
+  }
   {
     try
     {
@@ -445,6 +504,7 @@ void termo7() :
       System.out.println(e.getMessage());
       e.printStackTrace();
     }
+    storage.Incluir(new Item(tipo, t.image));
   }
-| < ABRE_PARENTESE > expressao() < FECHA_PARENTESE >
+| < ABRE_PARENTESE > expressao(storage) < FECHA_PARENTESE >
 }

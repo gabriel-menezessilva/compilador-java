@@ -1,11 +1,1 @@
-string @nome = 'Renan';
-string @nomeCompleto = @nome#@sobrenome;
-number @idade = 22.0;
-
-print(@nome);
-print(@nomeCompleto);
-print(@idade);
-print(@peso);
-
-string @nome = 'Renan';
-
+number @nome = (10 + 10) * 20; 
