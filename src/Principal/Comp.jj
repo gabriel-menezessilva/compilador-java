@@ -1,7 +1,7 @@
 options
 {
   static = false;
-  //DEBUG_PARSER = true;
+  DEBUG_PARSER = true;
   //DEBUG_TOKEN_MANAGER = true;
   DEBUG = true;
 }
@@ -366,7 +366,7 @@ void expressao() :
     t = < OU >
     {
       storage.Incluir(new Item('O', t.image));
-      System.out.println(storage.toString());
+      //System.out.println(storage.toString());
     }
     termo1(storage)
   )*
@@ -422,6 +422,9 @@ void termo3(Storage storage) :
   (
     (
       t = < ADICAO >
+      {
+        storage.Incluir(new Item('O', t.image));
+      }
     | t = < SUBTRACAO >
       {
         storage.Incluir(new Item('O', t.image));
@@ -474,7 +477,6 @@ void termo6(Storage storage) :
       t = < NEGACAO >
       {
         storage.Incluir(new Item('O', t.image));
-        System.out.println(storage.toString());
       }
     )*
     termo7(storage)
@@ -491,16 +493,16 @@ void termo7(Storage storage) :
   t = < NUMBER >
   {
     tipo = 'N';
+    storage.Incluir(new Item(tipo, t.image));
   }
 | t = < STRING >
   {
     tipo = 'S';
+    storage.Incluir(new Item(tipo, t.image));
   }
 | t = < IDENTIFICADOR >
   {
     tipo = 'V';
-  }
-  {
     try
     {
       tab.isExiste(t.image);

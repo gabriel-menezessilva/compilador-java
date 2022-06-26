@@ -45,25 +45,30 @@ public class Comp implements CompConstants {
 
 /* GLC do "inicio" */
   final public void inicio() throws ParseException {
-    label_1:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case INPUT:
-      case IMPRIMIR:
-      case SE:
-      case ENQUANTO:
-      case PARAR:
-      case STRING_TYPE:
-      case NUMBER_TYPE:
-        ;
-        break;
-      default:
-        jj_la1[0] = jj_gen;
-        break label_1;
+    trace_call("inicio");
+    try {
+      label_1:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case INPUT:
+        case IMPRIMIR:
+        case SE:
+        case ENQUANTO:
+        case PARAR:
+        case STRING_TYPE:
+        case NUMBER_TYPE:
+          ;
+          break;
+        default:
+          jj_la1[0] = jj_gen;
+          break label_1;
+        }
+        comando();
       }
-      comando();
+      jj_consume_token(0);
+    } finally {
+      trace_return("inicio");
     }
-    jj_consume_token(0);
   }
 
 /*
@@ -71,59 +76,66 @@ public class Comp implements CompConstants {
 	Exemplo: print("Texto exibido"); --> � um comando.
 */
   final public void comando() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case STRING_TYPE:
-    case NUMBER_TYPE:
-      declaraVariaveis();
-      break;
-    case INPUT:
-      estruturaInput();
-      break;
-    case IMPRIMIR:
-      jj_consume_token(IMPRIMIR);
-      saidaMensagem();
-      break;
-    case SE:
-      estruturaIF();
-      break;
-    case ENQUANTO:
-      jj_consume_token(ENQUANTO);
-      estruturaFuncaoBase();
-      break;
-    case PARAR:
-      jj_consume_token(PARAR);
-      break;
-    default:
-      jj_la1[1] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+    trace_call("comando");
+    try {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case STRING_TYPE:
+      case NUMBER_TYPE:
+        declaraVariaveis();
+        break;
+      case INPUT:
+        estruturaInput();
+        break;
+      case IMPRIMIR:
+        jj_consume_token(IMPRIMIR);
+        saidaMensagem();
+        break;
+      case SE:
+        estruturaIF();
+        break;
+      case ENQUANTO:
+        jj_consume_token(ENQUANTO);
+        estruturaFuncaoBase();
+        break;
+      case PARAR:
+        jj_consume_token(PARAR);
+        break;
+      default:
+        jj_la1[1] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      jj_consume_token(PT_VIRG);
+    } finally {
+      trace_return("comando");
     }
-    jj_consume_token(PT_VIRG);
   }
 
 /*
 	GLC da declara��o de variaveis aqui estamos definindo como vamos declarar uma variavel ou definir um valor para ela. 
 */
   final public void declaraVariaveis() throws ParseException {
+    trace_call("declaraVariaveis");
+    try {
   Storage storage = new Storage();
   Symbol simb;
   Token t;
   char tp;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case NUMBER_TYPE:
-      jj_consume_token(NUMBER_TYPE);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NUMBER_TYPE:
+        jj_consume_token(NUMBER_TYPE);
       tp = 'N';
-      break;
-    case STRING_TYPE:
-      jj_consume_token(STRING_TYPE);
+        break;
+      case STRING_TYPE:
+        jj_consume_token(STRING_TYPE);
       tp = 'S';
-      break;
-    default:
-      jj_la1[2] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    t = jj_consume_token(IDENTIFICADOR);
+        break;
+      default:
+        jj_la1[2] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      t = jj_consume_token(IDENTIFICADOR);
       simb = new Symbol(t.image, tp);
       try
       {
@@ -135,18 +147,18 @@ public class Comp implements CompConstants {
         e.printStackTrace();
       }
       storage.Incluir(new Item('V', t.image));
-    label_2:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case VIRGULA:
-        ;
-        break;
-      default:
-        jj_la1[3] = jj_gen;
-        break label_2;
-      }
-      jj_consume_token(VIRGULA);
-      t = jj_consume_token(IDENTIFICADOR);
+      label_2:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case VIRGULA:
+          ;
+          break;
+        default:
+          jj_la1[3] = jj_gen;
+          break label_2;
+        }
+        jj_consume_token(VIRGULA);
+        t = jj_consume_token(IDENTIFICADOR);
         simb = new Symbol(t.image, tp);
         try
         {
@@ -158,88 +170,98 @@ public class Comp implements CompConstants {
           e.printStackTrace();
         }
         storage.Incluir(new Item('V', t.image));
-    }
-      System.out.println(storage.toString());
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case ATRIBUICAO:
-      jj_consume_token(ATRIBUICAO);
-      label_3:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case IDENTIFICADOR:
-        case STRING:
-        case NUMBER:
-        case NEGACAO:
-        case SUBTRACAO:
-        case ABRE_PARENTESE:
-          expressao();
-          break;
-        case INPUT:
-          estruturaInput();
-          break;
-        default:
-          jj_la1[4] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case CONCAT:
-          jj_consume_token(CONCAT);
-          break;
-        default:
-          jj_la1[5] = jj_gen;
-          ;
-        }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case IDENTIFICADOR:
-        case STRING:
-        case NUMBER:
-        case NEGACAO:
-        case SUBTRACAO:
-        case ABRE_PARENTESE:
-        case INPUT:
-          ;
-          break;
-        default:
-          jj_la1[6] = jj_gen;
-          break label_3;
-        }
       }
-      break;
-    default:
-      jj_la1[7] = jj_gen;
-      ;
+      System.out.println(storage.toString());
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ATRIBUICAO:
+        jj_consume_token(ATRIBUICAO);
+        label_3:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case IDENTIFICADOR:
+          case STRING:
+          case NUMBER:
+          case NEGACAO:
+          case SUBTRACAO:
+          case ABRE_PARENTESE:
+            expressao();
+            break;
+          case INPUT:
+            estruturaInput();
+            break;
+          default:
+            jj_la1[4] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case CONCAT:
+            jj_consume_token(CONCAT);
+            break;
+          default:
+            jj_la1[5] = jj_gen;
+            ;
+          }
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case IDENTIFICADOR:
+          case STRING:
+          case NUMBER:
+          case NEGACAO:
+          case SUBTRACAO:
+          case ABRE_PARENTESE:
+          case INPUT:
+            ;
+            break;
+          default:
+            jj_la1[6] = jj_gen;
+            break label_3;
+          }
+        }
+        break;
+      default:
+        jj_la1[7] = jj_gen;
+        ;
+      }
+    } finally {
+      trace_return("declaraVariaveis");
     }
   }
 
   final public void estruturaInput() throws ParseException {
-    jj_consume_token(INPUT);
-    saidaMensagem();
+    trace_call("estruturaInput");
+    try {
+      jj_consume_token(INPUT);
+      saidaMensagem();
+    } finally {
+      trace_return("estruturaInput");
+    }
   }
 
 //Estrutura base para sa�da de mensagem
 // ARUMAR O PROBLEMA DO CONCATENADOR
   final public void saidaMensagem() throws ParseException {
+    trace_call("saidaMensagem");
+    try {
   Token t;
-    jj_consume_token(ABRE_PARENTESE);
-    label_4:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case IDENTIFICADOR:
-      case STRING:
-        ;
-        break;
-      default:
-        jj_la1[8] = jj_gen;
-        break label_4;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case STRING:
-        jj_consume_token(STRING);
-        saidaMensagemExtOpt();
-        break;
-      case IDENTIFICADOR:
-        t = jj_consume_token(IDENTIFICADOR);
+      jj_consume_token(ABRE_PARENTESE);
+      label_4:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IDENTIFICADOR:
+        case STRING:
+          ;
+          break;
+        default:
+          jj_la1[8] = jj_gen;
+          break label_4;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case STRING:
+          jj_consume_token(STRING);
+          saidaMensagemExtOpt();
+          break;
+        case IDENTIFICADOR:
+          t = jj_consume_token(IDENTIFICADOR);
       try
       {
         tab.isExiste(t.image);
@@ -249,30 +271,38 @@ public class Comp implements CompConstants {
         System.out.println(e.getMessage());
         e.printStackTrace();
       }
-        saidaMensagemExtOpt();
-        break;
-      default:
-        jj_la1[9] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+          saidaMensagemExtOpt();
+          break;
+        default:
+          jj_la1[9] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
       }
+      jj_consume_token(FECHA_PARENTESE);
+    } finally {
+      trace_return("saidaMensagem");
     }
-    jj_consume_token(FECHA_PARENTESE);
   }
 
   final public void saidaMensagemExtOpt() throws ParseException {
-    label_5:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case CONCAT:
-        ;
-        break;
-      default:
-        jj_la1[10] = jj_gen;
-        break label_5;
+    trace_call("saidaMensagemExtOpt");
+    try {
+      label_5:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case CONCAT:
+          ;
+          break;
+        default:
+          jj_la1[10] = jj_gen;
+          break label_5;
+        }
+        jj_consume_token(CONCAT);
+        expressao();
       }
-      jj_consume_token(CONCAT);
-      expressao();
+    } finally {
+      trace_return("saidaMensagemExtOpt");
     }
   }
 
@@ -280,18 +310,23 @@ public class Comp implements CompConstants {
 	Respons�vel por montar a estrutura base do condicional IF
 */
   final public void estruturaIF() throws ParseException {
-    jj_consume_token(SE);
-    estruturaFuncaoBase();
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SENAO:
-      jj_consume_token(SENAO);
-      corpoCodigoBase();
-      break;
-    default:
-      jj_la1[11] = jj_gen;
-      ;
+    trace_call("estruturaIF");
+    try {
+      jj_consume_token(SE);
+      estruturaFuncaoBase();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case SENAO:
+        jj_consume_token(SENAO);
+        corpoCodigoBase();
+        break;
+      default:
+        jj_la1[11] = jj_gen;
+        ;
+      }
+      jj_consume_token(FIM_SE);
+    } finally {
+      trace_return("estruturaIF");
     }
-    jj_consume_token(FIM_SE);
   }
 
 /*
@@ -299,10 +334,15 @@ public class Comp implements CompConstants {
     Exemplo:   (express�o) { corpo da express�o}
 */
   final public void estruturaFuncaoBase() throws ParseException {
-    jj_consume_token(ABRE_PARENTESE);
-    expressao();
-    jj_consume_token(FECHA_PARENTESE);
-    corpoCodigoBase();
+    trace_call("estruturaFuncaoBase");
+    try {
+      jj_consume_token(ABRE_PARENTESE);
+      expressao();
+      jj_consume_token(FECHA_PARENTESE);
+      corpoCodigoBase();
+    } finally {
+      trace_return("estruturaFuncaoBase");
+    }
   }
 
 /*
@@ -310,251 +350,296 @@ public class Comp implements CompConstants {
   	Exemplo: { comandos }
 */
   final public void corpoCodigoBase() throws ParseException {
-    jj_consume_token(ABRE_CHAVES);
-    label_6:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case INPUT:
-      case IMPRIMIR:
-      case SE:
-      case ENQUANTO:
-      case PARAR:
-      case STRING_TYPE:
-      case NUMBER_TYPE:
-        ;
-        break;
-      default:
-        jj_la1[12] = jj_gen;
-        break label_6;
+    trace_call("corpoCodigoBase");
+    try {
+      jj_consume_token(ABRE_CHAVES);
+      label_6:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case INPUT:
+        case IMPRIMIR:
+        case SE:
+        case ENQUANTO:
+        case PARAR:
+        case STRING_TYPE:
+        case NUMBER_TYPE:
+          ;
+          break;
+        default:
+          jj_la1[12] = jj_gen;
+          break label_6;
+        }
+        comando();
       }
-      comando();
+      jj_consume_token(FECHA_CHAVES);
+    } finally {
+      trace_return("corpoCodigoBase");
     }
-    jj_consume_token(FECHA_CHAVES);
   }
 
   final public void expressao() throws ParseException {
+    trace_call("expressao");
+    try {
   Token t;
   Storage storage = new Storage();
-    termo1(storage);
-    label_7:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case OU:
-        ;
-        break;
-      default:
-        jj_la1[13] = jj_gen;
-        break label_7;
-      }
-      t = jj_consume_token(OU);
-      storage.Incluir(new Item('O', t.image));
-      System.out.println(storage.toString());
       termo1(storage);
-    }
+      label_7:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case OU:
+          ;
+          break;
+        default:
+          jj_la1[13] = jj_gen;
+          break label_7;
+        }
+        t = jj_consume_token(OU);
+      storage.Incluir(new Item('O', t.image));
+      //System.out.println(storage.toString());
+
+        termo1(storage);
+      }
     System.out.println(storage.toString());
+    } finally {
+      trace_return("expressao");
+    }
   }
 
   final public void termo1(Storage storage) throws ParseException {
+    trace_call("termo1");
+    try {
   Token t;
-    termo2(storage);
-    label_8:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case AND:
-        ;
-        break;
-      default:
-        jj_la1[14] = jj_gen;
-        break label_8;
-      }
-      t = jj_consume_token(AND);
-      storage.Incluir(new Item('O', t.image));
       termo2(storage);
+      label_8:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case AND:
+          ;
+          break;
+        default:
+          jj_la1[14] = jj_gen;
+          break label_8;
+        }
+        t = jj_consume_token(AND);
+      storage.Incluir(new Item('O', t.image));
+        termo2(storage);
+      }
+    } finally {
+      trace_return("termo1");
     }
   }
 
   final public void termo2(Storage storage) throws ParseException {
+    trace_call("termo2");
+    try {
   Token t;
-    termo3(storage);
-    label_9:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case MAIOR_QUE:
-      case MAIOR_IGUAL:
-      case MENOR_QUE:
-      case MENOR_IGUAL:
-      case EQUIVALENTE:
-      case DIFERENTE:
-        ;
-        break;
-      default:
-        jj_la1[15] = jj_gen;
-        break label_9;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case MAIOR_QUE:
-        t = jj_consume_token(MAIOR_QUE);
-        break;
-      case MENOR_QUE:
-        t = jj_consume_token(MENOR_QUE);
-        break;
-      case EQUIVALENTE:
-        t = jj_consume_token(EQUIVALENTE);
-        break;
-      case DIFERENTE:
-        t = jj_consume_token(DIFERENTE);
-        break;
-      case MAIOR_IGUAL:
-        t = jj_consume_token(MAIOR_IGUAL);
-        break;
-      case MENOR_IGUAL:
-        t = jj_consume_token(MENOR_IGUAL);
-        break;
-      default:
-        jj_la1[16] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      storage.Incluir(new Item('O', t.image));
       termo3(storage);
+      label_9:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MAIOR_QUE:
+        case MAIOR_IGUAL:
+        case MENOR_QUE:
+        case MENOR_IGUAL:
+        case EQUIVALENTE:
+        case DIFERENTE:
+          ;
+          break;
+        default:
+          jj_la1[15] = jj_gen;
+          break label_9;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MAIOR_QUE:
+          t = jj_consume_token(MAIOR_QUE);
+          break;
+        case MENOR_QUE:
+          t = jj_consume_token(MENOR_QUE);
+          break;
+        case EQUIVALENTE:
+          t = jj_consume_token(EQUIVALENTE);
+          break;
+        case DIFERENTE:
+          t = jj_consume_token(DIFERENTE);
+          break;
+        case MAIOR_IGUAL:
+          t = jj_consume_token(MAIOR_IGUAL);
+          break;
+        case MENOR_IGUAL:
+          t = jj_consume_token(MENOR_IGUAL);
+          break;
+        default:
+          jj_la1[16] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      storage.Incluir(new Item('O', t.image));
+        termo3(storage);
+      }
+    } finally {
+      trace_return("termo2");
     }
   }
 
   final public void termo3(Storage storage) throws ParseException {
+    trace_call("termo3");
+    try {
   Token t;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SUBTRACAO:
-      t = jj_consume_token(SUBTRACAO);
-      break;
-    default:
-      jj_la1[17] = jj_gen;
-      ;
-    }
-    termo4(storage);
-    label_10:
-    while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case ADICAO:
       case SUBTRACAO:
-        ;
+        t = jj_consume_token(SUBTRACAO);
         break;
       default:
-        jj_la1[18] = jj_gen;
-        break label_10;
+        jj_la1[17] = jj_gen;
+        ;
       }
-      label_11:
+      termo4(storage);
+      label_10:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case ADICAO:
-          t = jj_consume_token(ADICAO);
-          break;
-        case SUBTRACAO:
-          t = jj_consume_token(SUBTRACAO);
-        storage.Incluir(new Item('O', t.image));
-          break;
-        default:
-          jj_la1[19] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ADICAO:
         case SUBTRACAO:
           ;
           break;
         default:
-          jj_la1[20] = jj_gen;
-          break label_11;
+          jj_la1[18] = jj_gen;
+          break label_10;
         }
+        label_11:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case ADICAO:
+            t = jj_consume_token(ADICAO);
+        storage.Incluir(new Item('O', t.image));
+            break;
+          case SUBTRACAO:
+            t = jj_consume_token(SUBTRACAO);
+        storage.Incluir(new Item('O', t.image));
+            break;
+          default:
+            jj_la1[19] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case ADICAO:
+          case SUBTRACAO:
+            ;
+            break;
+          default:
+            jj_la1[20] = jj_gen;
+            break label_11;
+          }
+        }
+        termo4(storage);
       }
-      termo4(storage);
+    } finally {
+      trace_return("termo3");
     }
   }
 
   final public void termo4(Storage storage) throws ParseException {
+    trace_call("termo4");
+    try {
   Token t;
-    termo5(storage);
-    label_12:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case MULTIPLICACAO:
-      case DIVISAO:
-        ;
-        break;
-      default:
-        jj_la1[21] = jj_gen;
-        break label_12;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case MULTIPLICACAO:
-        t = jj_consume_token(MULTIPLICACAO);
-        break;
-      case DIVISAO:
-        t = jj_consume_token(DIVISAO);
-        break;
-      default:
-        jj_la1[22] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      storage.Incluir(new Item('O', t.image));
       termo5(storage);
+      label_12:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MULTIPLICACAO:
+        case DIVISAO:
+          ;
+          break;
+        default:
+          jj_la1[21] = jj_gen;
+          break label_12;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MULTIPLICACAO:
+          t = jj_consume_token(MULTIPLICACAO);
+          break;
+        case DIVISAO:
+          t = jj_consume_token(DIVISAO);
+          break;
+        default:
+          jj_la1[22] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      storage.Incluir(new Item('O', t.image));
+        termo5(storage);
+      }
+    } finally {
+      trace_return("termo4");
     }
   }
 
   final public void termo5(Storage storage) throws ParseException {
+    trace_call("termo5");
+    try {
   Token t;
-    termo6(storage);
-    label_13:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case POTENCIA:
-        ;
-        break;
-      default:
-        jj_la1[23] = jj_gen;
-        break label_13;
-      }
-      t = jj_consume_token(POTENCIA);
-      storage.Incluir(new Item('O', t.image));
       termo6(storage);
+      label_13:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case POTENCIA:
+          ;
+          break;
+        default:
+          jj_la1[23] = jj_gen;
+          break label_13;
+        }
+        t = jj_consume_token(POTENCIA);
+      storage.Incluir(new Item('O', t.image));
+        termo6(storage);
+      }
+    } finally {
+      trace_return("termo5");
     }
   }
 
   final public void termo6(Storage storage) throws ParseException {
+    trace_call("termo6");
+    try {
   Token t;
-    label_14:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case NEGACAO:
-        ;
-        break;
-      default:
-        jj_la1[24] = jj_gen;
-        break label_14;
-      }
-      t = jj_consume_token(NEGACAO);
+      label_14:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case NEGACAO:
+          ;
+          break;
+        default:
+          jj_la1[24] = jj_gen;
+          break label_14;
+        }
+        t = jj_consume_token(NEGACAO);
         storage.Incluir(new Item('O', t.image));
-        System.out.println(storage.toString());
+      }
+      termo7(storage);
+    } finally {
+      trace_return("termo6");
     }
-    termo7(storage);
   }
 
   final public void termo7(Storage storage) throws ParseException {
+    trace_call("termo7");
+    try {
   Symbol simb;
   Token t;
   char tipo;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case NUMBER:
-      t = jj_consume_token(NUMBER);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NUMBER:
+        t = jj_consume_token(NUMBER);
     tipo = 'N';
-      break;
-    case STRING:
-      t = jj_consume_token(STRING);
+    storage.Incluir(new Item(tipo, t.image));
+        break;
+      case STRING:
+        t = jj_consume_token(STRING);
     tipo = 'S';
-      break;
-    case IDENTIFICADOR:
-      t = jj_consume_token(IDENTIFICADOR);
+    storage.Incluir(new Item(tipo, t.image));
+        break;
+      case IDENTIFICADOR:
+        t = jj_consume_token(IDENTIFICADOR);
     tipo = 'V';
     try
     {
@@ -566,16 +651,19 @@ public class Comp implements CompConstants {
       e.printStackTrace();
     }
     storage.Incluir(new Item(tipo, t.image));
-      break;
-    case ABRE_PARENTESE:
-      jj_consume_token(ABRE_PARENTESE);
-      expressao();
-      jj_consume_token(FECHA_PARENTESE);
-      break;
-    default:
-      jj_la1[25] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+        break;
+      case ABRE_PARENTESE:
+        jj_consume_token(ABRE_PARENTESE);
+        expressao();
+        jj_consume_token(FECHA_PARENTESE);
+        break;
+      default:
+        jj_la1[25] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    } finally {
+      trace_return("termo7");
     }
   }
 
@@ -675,6 +763,7 @@ public class Comp implements CompConstants {
     jj_ntk = -1;
     if (token.kind == kind) {
       jj_gen++;
+      trace_token(token, "");
       return token;
     }
     token = oldToken;
@@ -689,6 +778,7 @@ public class Comp implements CompConstants {
     else token = token.next = token_source.getNextToken();
     jj_ntk = -1;
     jj_gen++;
+      trace_token(token, " (in getNextToken)");
     return token;
   }
 
@@ -747,12 +837,55 @@ public class Comp implements CompConstants {
     return new ParseException(token, exptokseq, tokenImage);
   }
 
-  /** Enable tracing. */
+  private int trace_indent = 0;
+  private boolean trace_enabled = true;
+
+/** Enable tracing. */
   final public void enable_tracing() {
+    trace_enabled = true;
   }
 
-  /** Disable tracing. */
+/** Disable tracing. */
   final public void disable_tracing() {
+    trace_enabled = false;
+  }
+
+  private void trace_call(String s) {
+    if (trace_enabled) {
+      for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
+      System.out.println("Call:   " + s);
+    }
+    trace_indent = trace_indent + 2;
+  }
+
+  private void trace_return(String s) {
+    trace_indent = trace_indent - 2;
+    if (trace_enabled) {
+      for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
+      System.out.println("Return: " + s);
+    }
+  }
+
+  private void trace_token(Token t, String where) {
+    if (trace_enabled) {
+      for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
+      System.out.print("Consumed token: <" + tokenImage[t.kind]);
+      if (t.kind != 0 && !tokenImage[t.kind].equals("\"" + t.image + "\"")) {
+        System.out.print(": \"" + t.image + "\"");
+      }
+      System.out.println(" at line " + t.beginLine + " column " + t.beginColumn + ">" + where);
+    }
+  }
+
+  private void trace_scan(Token t1, int t2) {
+    if (trace_enabled) {
+      for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
+      System.out.print("Visited token: <" + tokenImage[t1.kind]);
+      if (t1.kind != 0 && !tokenImage[t1.kind].equals("\"" + t1.image + "\"")) {
+        System.out.print(": \"" + t1.image + "\"");
+      }
+      System.out.println(" at line " + t1.beginLine + " column " + t1.beginColumn + ">; Expected token: <" + tokenImage[t2] + ">");
+    }
   }
 
 }

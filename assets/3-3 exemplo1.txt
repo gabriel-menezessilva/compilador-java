@@ -1,6 +1,3 @@
-number @idade = 22.0;
-string @nome = 'Renan';
+if(10.0 + 5.0 + 3.0 + 25.0 + 30.0){
 
-if(@idade > 18.0){
-	print('Liberado');
 }endif;
